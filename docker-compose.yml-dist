@@ -16,6 +16,10 @@ services:
                 image: registry.gitlab.com/nolim1t/airdeveloppa-backend:v0.0.3-4bbfde74
                 environment:
                         HOME: /data
+                        DBHOST: 10.254.1.6
+                        DBUSER: pgadmin
+                        DBPASS: secretaccess
+                        DBPORT: 5432
                 container_name: backend
                 volumes:
                         - ${PWD}/backend:/data/

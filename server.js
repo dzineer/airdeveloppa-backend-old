@@ -7,8 +7,8 @@ var bodyParser = require('koa-body');
 
 // create PG Client
 const client = new Client({
-      host: '10.254.1.6',
-      port: 5334,
+      host: process.env.DBHOST || '10.254.1.6',
+      port: process.env.DBPORT || 5432,
       user: process.env.DBUSER || 'pgadmin',
       password: process.env.DBPASS || 'secretaccess',
 })
