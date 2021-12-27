@@ -1,6 +1,14 @@
 const Koa = require('koa');
 const compose = require('koa-compose');
+const { Client } = require('pg');
 var bodyParser = require('koa-body');
+
+const client = new Client({
+      host: '10.254.1.6',
+      port: 5334,
+      user: 'pgadmin',
+      password: 'secretaccess',
+})
 
 const app = new Koa();
 
