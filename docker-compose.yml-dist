@@ -26,19 +26,19 @@ services:
                 networks:
                     net:
                         ipv4_address: 10.254.1.4
-        db:
+        postgres:
                 container_name: db
                 image: postgres:14.1
                 user: "501:20"
                 restart: on-failure
                 volumes:
-                        - ${PWD}/postgres:/var/lib/postgresql/data/pgdata
+                        - ${PWD}/postgres:/var/lib/postgresql/data
                 environment:
                         HOME: /data
                         POSTGRES_USER: pgadmin
                         POSTGRES_PASSWORD: secretaccess
                         POSTGRES_DB: airdeveloppa
-                        PGDATA: /var/lib/postgresql/data/pgdata
+                        PGDATA: /var/lib/postgresql/data
                 networks:
                     net:
                         ipv4_address: 10.254.1.6
