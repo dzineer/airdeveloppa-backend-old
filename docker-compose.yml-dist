@@ -22,7 +22,7 @@ services:
                 volumes:
                         - ${PWD}/backend:/data/
                 restart: on-failure
-                stop_grace_period: 5m30s
+                stop_grace_period: 30s
                 networks:
                     net:
                         ipv4_address: 10.254.1.4
