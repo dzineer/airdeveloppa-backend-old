@@ -15,5 +15,7 @@ docker pull registry.gitlab.com/nolim1t/airdeveloppa-backend:v0.0.1-54385861
 
 ## Maintainer Notes
 
-- Have a `PERSONALTOKEN` variable set up
+- Have a `PERSONALTOKEN` variable set up in gitlab
 - When releasing push a tag
+- Have a ```postgres``` directory created
+
