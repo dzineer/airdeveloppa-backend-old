@@ -13,7 +13,7 @@ services:
                     net:
                         ipv4_address: 10.254.1.2
         backend:
-                image: registry.gitlab.com/nolim1t/airdeveloppa-backend:v0.0.4-7c7aae89
+                image: registry.gitlab.com/nolim1t/airdeveloppa-backend:v0.0.5-db4a13b0
                 environment:
                         HOME: /data
                         DBHOST: 10.254.1.6
