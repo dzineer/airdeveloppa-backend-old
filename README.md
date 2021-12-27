@@ -18,4 +18,5 @@ docker pull registry.gitlab.com/nolim1t/airdeveloppa-backend:v0.0.1-54385861
 - Have a `PERSONALTOKEN` variable set up in gitlab
 - When releasing push a tag
 - Have a ```postgres``` directory created
+- Make sure ```postgresql.conf``` is available where we run ```docker-compose up -d```
 
