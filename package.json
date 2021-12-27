@@ -10,6 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "koa": "^2.13.4",
-    "koa-body": "^4.2.0"
+    "koa-body": "^4.2.0",
+    "pg": "^8.7.1"
   }
 }
