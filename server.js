@@ -1,14 +1,26 @@
 const Koa = require('koa');
 const compose = require('koa-compose');
+const process = require("process");
+
 const { Client } = require('pg');
 var bodyParser = require('koa-body');
 
+// create PG Client
 const client = new Client({
       host: '10.254.1.6',
       port: 5334,
-      user: 'pgadmin',
-      password: 'secretaccess',
+      user: process.env.DBUSER || 'pgadmin',
+      password: process.env.DBPASS || 'secretaccess',
 })
+
+// connect test
+client.connect(err => {
+      if (err) {
+        console.error('connection error', err.stack)
+      } else {
+        console.log('connected to database')
+      }
+});
 
 const app = new Koa();
 
