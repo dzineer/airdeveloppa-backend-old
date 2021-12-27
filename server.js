@@ -40,10 +40,10 @@ async function base(ctx, next) {
         if ('GET' == ctx.request.method) {
             client.connect(err => {
                 if (err) {
-                    ctx.body('connection error: ' + err.stack);
+                    ctx.body = 'connection error: ' + err.stack;
                 } else {
                     // if all good
-                    ctx.body('connected to database');
+                    ctx.body = 'connected to database';
                 }
             });
         } else {
