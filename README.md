@@ -9,8 +9,7 @@ docker login registry.gitlab.com -u nolim1t
 docker pull registry.gitlab.com/nolim1t/airdeveloppa-backend:latest
 
 # Pull specific version
-docker pull registry.gitlab.com/nolim1t/airdeveloppa-backend:v0.0.1-54385861
-
+docker pull registry.gitlab.com/nolim1t/airdeveloppa-backend:v0.0.5-db4a13b0
 ```
 
 ## Maintainer Notes
