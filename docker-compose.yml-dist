@@ -13,11 +13,11 @@ services:
                     net:
                         ipv4_address: 10.254.1.2
         backend:
-                image: registry.gitlab.com/nolim1t/airdeveloppa-backend:v0.0.3-4bbfde74
+                image: registry.gitlab.com/nolim1t/airdeveloppa-backend:v0.0.4-7c7aae89
                 environment:
                         HOME: /data
                         DBHOST: 10.254.1.6
-                        DBUSER: pgadmin
+                        DBUSER: airdeveloppa
                         DBPASS: secretaccess
                         DBPORT: 5432
                 container_name: backend
@@ -36,7 +36,7 @@ services:
                         - ${PWD}/postgres:/var/lib/postgresql/data
                 environment:
                         HOME: /data
-                        POSTGRES_USER: pgadmin
+                        POSTGRES_USER: airdeveloppa
                         POSTGRES_PASSWORD: secretaccess
                         POSTGRES_DB: airdeveloppa
                         PGDATA: /var/lib/postgresql/data
