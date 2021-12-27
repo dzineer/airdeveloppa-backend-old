@@ -13,15 +13,6 @@ const client = new Client({
       password: process.env.DBPASS || 'secretaccess',
 })
 
-// connect test
-client.connect(err => {
-      if (err) {
-        console.error('connection error', err.stack)
-      } else {
-        console.log('connected to database')
-      }
-});
-
 const app = new Koa();
 
 app.use(async (ctx, next) => {
@@ -45,6 +36,19 @@ async function base(ctx, next) {
             console.log("request: " + JSON.stringify(ctx.request.query));
         }
         ctx.body = 'Hello World';
+    } else if ('/dbconnect' == ctx.path) {
+        if ('GET' == ctx.request.method) {
+            client.connect(err => {
+                if (err) {
+                    ctx.body('connection error: ' + err.stack);
+                } else {
+                    // if all good
+                    ctx.body('connected to database');
+                }
+            });
+        } else {
+            ctx.body('Method not supported');
+        }
     } else {
         await next();
     }
