@@ -1,3 +1,4 @@
+docker-compose.yml
 package-lock.json
 *.logs
 *.test
