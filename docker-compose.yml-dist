@@ -2,7 +2,7 @@ version: '3.8'
 services:
         nginx:
                 container_name: web
-                user: 1000:1000
+                user: "501:20"
                 image: nginx:1.17.8
                 volumes:
                     - ${PWD}/nginx:/etc/nginx
@@ -15,7 +15,7 @@ services:
                         ipv4_address: 10.254.1.2
         backend:
                 image: registry.gitlab.com/nolim1t/airdeveloppa-backend:v0.0.1-54385861
-                user: 1000:1000
+                user: "501:20"
                 environment:
                         HOME: /data
                 container_name: backend
@@ -27,14 +27,18 @@ services:
                     net:
                         ipv4_address: 10.254.1.4
         db:
+                container_name: db
                 image: postgres:14.1
-                user: 1000:1000
+                user: "501:20"
                 restart: on-failure
+                volumes:
+                        - ${PWD}/postgres:/var/lib/postgresql/data/pgdata
                 environment:
                         HOME: /data
                         POSTGRES_USER: pgadmin
                         POSTGRES_PASSWORD: secretaccess
                         POSTGRES_DB: airdeveloppa
+                        PGDATA: /var/lib/postgresql/data/pgdata
                 networks:
                     net:
                         ipv4_address: 10.254.1.6
