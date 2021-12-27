@@ -28,6 +28,7 @@ app.use(bodyParser({
 }));
 async function base(ctx, next) {
     if ('/' == ctx.path) {
+        console.log("default / path detected");
         if ('POST' == ctx.request.method) {
             console.log('POST detected');
             console.log("request: " + JSON.stringify(ctx.request.body));
@@ -37,7 +38,9 @@ async function base(ctx, next) {
         }
         ctx.body = 'Hello World';
     } else if ('/dbconnect' == ctx.path) {
+        console.log("DB Connect path detected");
         if ('GET' == ctx.request.method) {
+            console.log("/dbconnect GET invoked");
             client.connect(err => {
                 if (err) {
                     ctx.body = 'connection error: ' + err.stack;
@@ -47,9 +50,11 @@ async function base(ctx, next) {
                 }
             });
         } else {
+            console.log("method other than get used");
             ctx.body('Method not supported');
         }
     } else {
+        console.log("Default path");
         await next();
     }
 }
