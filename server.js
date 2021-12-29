@@ -58,12 +58,12 @@ function base(ctx, next) {
             results = {
                 verified: verify_status,
                 verify_msg: verify_message,
-                meta: {"status": "OK", "msg": "Success"}
+                meta: {"status": "OK", "msg": "Success", "timestamp": new Date().getTime()}
             };
             ctx.body = JSON.stringify(results);
         } else {
             results = {
-                meta: {"status": "Method Not supported", "msg": "Error"}
+                meta: {"status": "Method Not supported", "msg": "Error", "timestamp": new Date().getTime()}
             };
             ctx.body = JSON.stringify(results);
         }
@@ -74,20 +74,30 @@ function base(ctx, next) {
                     device_id: "mostlikely-a-uuid",
                     device_location: "cafe",
                     place: {
-                        name: "Yello Coworking Space",
+                        name: "Yellow Coworking Space",
                         coords: [18.79829143251964, 98.96882473444388],
-                        address: "16 2 Nimmanahaeminda Road, Su Thep, Mueang Chiang Mai, Chiang Mai 50200"
+                        address: "16 2 Nimmanahaeminda Road, Su Thep, Mueang Chiang Mai, Chiang Mai 50200",
+                        meta: {
+                            "bounty": 5000,
+                            "purifiers": 8,
+                            "floors": 2,
+                            "rating": 1,
+                        }
                     },
-                    aqi: 20
+                    aqi: {
+                        now: 9,
+                        week: 13,
+                        month: 10
+                    },
                 }
             ],
-            meta: {"status": "OK", "msg": "Processed"}
+            meta: {"status": "OK", "msg": "Processed", "timestamp": new Date().getTime()}
         };
         if ('GET' == ctx.request.method) {
             ctx.body = JSON.stringify(results);
         } else {
             results = {
-                meta: {"status": "Not supported", "msg": "Error"}
+                meta: {"status": "Not supported", "msg": "Error", "timestamp": new Date().getTime()}
             };
             ctx.body = JSON.stringify(results);
         }
