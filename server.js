@@ -26,7 +26,8 @@ app.use(bodyParser({
     multipart: true,
     urlencoded: true
 }));
-async function base(ctx, next) {
+var results;
+function base(ctx, next) {
     if ('/' == ctx.path) {
         console.log("default / path detected");
         if ('POST' == ctx.request.method) {
@@ -37,25 +38,62 @@ async function base(ctx, next) {
             console.log("request: " + JSON.stringify(ctx.request.query));
         }
         ctx.body = 'Hello World';
-    } else if ('/dbconnect' == ctx.path) {
-        console.log("DB Connect path detected");
-        if ('GET' == ctx.request.method) {
-            console.log("/dbconnect GET invoked");
-            client.connect(err => {
-                if (err) {
-                    ctx.body = 'connection error: ' + err.stack;
-                } else {
-                    // if all good
-                    ctx.body = 'connected to database';
+    } else if ('/1/verify' == ctx.path) {
+        if ('POST' == ctx.request.method) {
+            var verify_status;
+            var verify_message;
+            if (ctx.request.body.fakeVerify !== undefined) {
+                verify_status = JSON.parse(ctx.request.body.fakeVerify.toLowerCase());
+                if (verify_status == false) {
+                    verify_message = "Could not verify device";
                 }
-            });
+            } else {
+                verify_status = true;
+                verify_message = "Verified successfully";
+            }
+            if (ctx.request.body.device === undefined) {
+                verify_status = false;
+                verify_message = "Must specify a valid 'device' parameter";
+            }
+            results = {
+                verified: verify_status,
+                verify_msg: verify_message,
+                meta: {"status": "OK", "msg": "Success"}
+            };
+            ctx.body = JSON.stringify(results);
         } else {
-            console.log("method other than get used");
-            ctx.body('Method not supported');
+            results = {
+                meta: {"status": "Method Not supported", "msg": "Error"}
+            };
+            ctx.body = JSON.stringify(results);
+        }
+    } else if ('/1/list' == ctx.path) {
+        results = {
+            result: [
+                {
+                    device_id: "mostlikely-a-uuid",
+                    device_location: "cafe",
+                    place: {
+                        name: "Yello Coworking Space",
+                        coords: [18.79829143251964, 98.96882473444388],
+                        address: "16 2 Nimmanahaeminda Road, Su Thep, Mueang Chiang Mai, Chiang Mai 50200"
+                    },
+                    aqi: 20
+                }
+            ],
+            meta: {"status": "OK", "msg": "Processed"}
+        };
+        if ('GET' == ctx.request.method) {
+            ctx.body = JSON.stringify(results);
+        } else {
+            results = {
+                meta: {"status": "Not supported", "msg": "Error"}
+            };
+            ctx.body = JSON.stringify(results);
         }
     } else {
         console.log("Default path");
-        await next();
+        next();
     }
 }
 
