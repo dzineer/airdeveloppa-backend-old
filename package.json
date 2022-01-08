@@ -1,6 +1,6 @@
 {
   "name": "backend",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Air Developpa Backend",
   "main": "server.js",
   "scripts": {
@@ -9,8 +9,10 @@
   "author": "nolim1t",
   "license": "MIT",
   "dependencies": {
+    "express": "^4.17.2",
     "koa": "^2.13.4",
     "koa-body": "^4.2.0",
-    "pg": "^8.7.1"
+    "pg": "^8.7.1",
+    "uuid": "^8.3.2"
   }
 }
