@@ -1,11 +1,21 @@
+/*
 const Koa = require('koa');
 const compose = require('koa-compose');
-const process = require("process");
-
-const { Client } = require('pg');
 var bodyParser = require('koa-body');
 
+*/
+
+// Web server parameters
+const express = require('express')
+const app = express()
+const port = 3000
+
+// for envirobment
+const process = require("process");
+
 // create PG Client
+/*
+const { Client } = require('pg');
 const client = new Client({
       host: process.env.DBHOST || '10.254.1.6',
       port: process.env.DBPORT || 5432,
@@ -14,7 +24,10 @@ const client = new Client({
 })
 
 const app = new Koa();
+*/
 
+
+/*
 app.use(async (ctx, next) => {
     const start = Date.now();
     await next();
@@ -26,7 +39,79 @@ app.use(bodyParser({
     multipart: true,
     urlencoded: true
 }));
-var results;
+*/
+
+// express body parser
+app.use(express.json()) // for parsing application/json
+app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+
+// result set
+var results = {
+  "meta": {"status": 400, "msg": "Not implemented"}
+};
+
+//  Default endpoint
+app.get('/', (req, res) => {
+  results.meta.status = 200;
+  results.meta.msg = "Success";
+  results.debug = undefined;
+  res.send(JSON.stringify(results));
+});
+
+app.post('/', (req, res) => {
+  results.meta.status = 400;
+  results.meta.msg = "Bad request";
+  results.meta.debug = {
+    "body": req.body
+  };
+  res.send(JSON.stringify(results));
+});
+
+// Begin actual API (express)
+// verify
+app.get('/1/verify', (req, res) => {
+  results.meta.status = 400;
+  results.meta.msg = "Bad request";
+  results.debug = undefined;
+  res.send(JSON.stringify(results));
+});
+app.post('/1/verify', (req, res) => {
+  results.meta.status = 400;
+  results.meta.msg = "Bad request";
+  results.debug = undefined;
+  var verify_status = false;
+  if (req.body["id"] !== undefined) {
+    // Check for ID
+    if (req.body.fakeVerify !== undefined) {
+      verify_status = req.body.fakeVerify.toLowerCase();
+      results.meta.status = 200;
+      results.meta.msg = "Verify status";
+      results.result = {
+        verified: verify_status
+      };
+      res.send(JSON.stringify(results));
+    } else {
+      results.meta.status = 200;
+      results.meta.msg = "Verify status";
+      results.result = {
+        verified: verify_status
+      };
+      res.send(JSON.stringify(results));
+    }
+  } else {
+    results.meta.status = 400;
+    results.meta.msg = "missing 'id' parameter";
+    res.send(JSON.stringify(results));
+  } // end check for ID
+});
+// End API (express)
+
+// Start express
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`)
+})
+// Koa stuff
+/*
 function base(ctx, next) {
     if ('/' == ctx.path) {
         console.log("default / path detected");
@@ -107,6 +192,6 @@ function base(ctx, next) {
     }
 }
 
-// Recompile all routes
 app.use(compose([base]));
 app.listen(3000);
+*/
