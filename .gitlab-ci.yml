@@ -52,7 +52,7 @@ build:buildx-master:
           if [[ -z $DOCKER_USERNAME ]] && [[ -z $DOCKER_PASSWORD ]]; then
             echo "Build to gitlab only"
             echo "Authenticating with gitlab container registry"
-            docker login registry.gitlab.com -u nolim1t -p $PERSONALTOKEN            
+            docker login registry.gitlab.com -u nolim1t -p $PERSONALTOKEN
             docker buildx build --platform $CI_BUILDX_ARCHS --progress plain --pull -t "$CI_REGISTRY_IMAGE" --push .
           fi
 
@@ -90,7 +90,7 @@ build:buildx-tags-or-branch:
                 --build-arg VERSION=$CI_COMMIT_TAG \
                 --progress plain \
                 --pull \
-                -t "$CI_APPLICATION_REPOSITORY:$CI_COMMIT_TAG-$CI_COMMIT_SHORT_SHA" --push \
+                -t "$CI_APPLICATION_REPOSITORY:$CI_COMMIT_TAG" --push \
                 .
             else
               echo "Not building by tag as CI_COMMIT_TAG is empty"
