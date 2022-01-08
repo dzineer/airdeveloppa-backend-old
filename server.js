@@ -49,12 +49,21 @@ app.use(express.urlencoded({ extended: true })) // for parsing application/x-www
 var results = {
   "meta": {"status": 400, "msg": "Not implemented"}
 };
+app.use(function (req, res, next) {
+  console.log('Time:', Date.now());
 
+  // reset results
+  results.meta.status = 400;
+  results.meta.msg = "Bad request";
+  results.meta.timestamp = new Date().getTime();
+  results.result = undefined;
+  results.meta.debug = undefined;
+  next()
+});
 //  Default endpoint
 app.get('/', (req, res) => {
   results.meta.status = 200;
   results.meta.msg = "Success";
-  results.debug = undefined;
   res.send(JSON.stringify(results));
 });
 
@@ -72,13 +81,11 @@ app.post('/', (req, res) => {
 app.get('/1/verify', (req, res) => {
   results.meta.status = 400;
   results.meta.msg = "Bad request";
-  results.debug = undefined;
   res.send(JSON.stringify(results));
 });
 app.post('/1/verify', (req, res) => {
   results.meta.status = 400;
   results.meta.msg = "Bad request";
-  results.debug = undefined;
   var verify_status = false;
   if (req.body["id"] !== undefined) {
     // Check for ID
@@ -86,6 +93,8 @@ app.post('/1/verify', (req, res) => {
       verify_status = req.body.fakeVerify.toLowerCase();
       results.meta.status = 200;
       results.meta.msg = "Verify status";
+      results.meta.timestamp = new Date().getTime();
+      results.meta.debug = undefined;
       results.result = {
         verified: verify_status
       };
@@ -93,6 +102,8 @@ app.post('/1/verify', (req, res) => {
     } else {
       results.meta.status = 200;
       results.meta.msg = "Verify status";
+      results.meta.timestamp = new Date().getTime();
+      results.meta.debug = undefined;
       results.result = {
         verified: verify_status
       };
@@ -104,11 +115,57 @@ app.post('/1/verify', (req, res) => {
     res.send(JSON.stringify(results));
   } // end check for ID
 });
+
+// list endpoint
+app.get('/1/list', (req, res) => {
+  results.meta.status = 400;
+  results.meta.msg = "";
+  console.log(req.query.length);
+  if (req.query !== undefined) {
+    if (req.query["lat"] !== undefined && req.query["lng"] !== undefined) {
+      // stubbed places
+      var places = [
+        {
+            device_id: "mostlikely-a-uuid",
+            device_location: "cafe",
+            place: {
+                name: "Yellow Coworking Space",
+                coords: [18.79829143251964, 98.96882473444388],
+                address: "16 2 Nimmanahaeminda Road, Su Thep, Mueang Chiang Mai, Chiang Mai 50200",
+                meta: {
+                    "bounty": 5000,
+                    "purifiers": 8,
+                    "floors": 2,
+                    "rating": 1,
+                }
+            },
+            aqi: {
+                now: 9,
+                week: 13,
+                month: 10
+            },
+        }
+      ];
+      results.meta.status = 200;
+      results.meta.msg = "Processed successfully";
+      results.result = places;
+      res.send(JSON.stringify(results));
+    } else {
+      results.meta.status = 400;
+      results.meta.msg = "Require 'lat' and 'lng' parameter";
+      res.send(JSON.stringify(results));
+    }
+  } else {
+    results.meta.status = 400;
+    results.meta.msg = "Require 'lat' and 'lng' parameter";
+    res.send(JSON.stringify(results));
+  }
+});
 // End API (express)
 
 // Start express
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+  console.log(`Developpa app listening at http://localhost:${port}`)
 })
 // Koa stuff
 /*
