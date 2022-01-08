@@ -15,6 +15,9 @@ const process = require("process");
 // for uuid
 const { v4: uuidv4 } = require('uuid');
 
+// For generating hashes
+var crypto = require('crypto');
+
 // create PG Client
 /*
 const { Client } = require('pg');
@@ -63,6 +66,26 @@ app.post('/', (req, res) => {
 });
 
 // Begin actual API (express)
+// register
+app.get('/1/register', (req, res) => {
+  results.meta.msg = "GET method is not supported";
+  res.send(JSON.stringify(results));
+});
+app.post('/1/register', (req, res) => {
+  if (req.body["device_id"] !== undefined) {
+    // TODO: Check existing registration, otherwise ask for a token too
+    results.meta.msg = "Registered";
+    results.result = {
+      registered: true,
+      token: crypto.createHash('sha256').update(crypto.createHash('sha256').update(req.body["device_id"] + "||" + (new Date().getTime()).toString()).digest('hex')).digest('hex')
+    };
+    res.send(JSON.stringify(results));
+  } else {
+    results.meta.msg = "required 'device_id' (and 'token' if a device exists)";
+    res.send(JSON.stringify(results));
+  }
+});
+
 // verify
 app.get('/1/verify', (req, res) => {
   results.meta.status = 400;
