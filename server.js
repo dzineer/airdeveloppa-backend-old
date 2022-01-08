@@ -96,7 +96,7 @@ app.post('/1/verify', (req, res) => {
   results.meta.status = 400;
   results.meta.msg = "Bad request";
   var verify_status = false;
-  if (req.body["id"] !== undefined) {
+  if (req.body["id"] !== undefined && req.body["token"]) {
     // Check for ID
     if (req.body.fakeVerify !== undefined) {
       verify_status = req.body.fakeVerify.toLowerCase();
@@ -120,7 +120,7 @@ app.post('/1/verify', (req, res) => {
     }
   } else {
     results.meta.status = 400;
-    results.meta.msg = "missing 'id' parameter";
+    results.meta.msg = "missing 'id' and 'token' parameter";
     res.send(JSON.stringify(results));
   } // end check for ID
 });
