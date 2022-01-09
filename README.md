@@ -39,6 +39,25 @@ This endpoint also lets an existing device re-validate an authentication token.
 - `lat` (not required or implemented)
 - `lng` (not required or implemented)
 
+### Balance
+
+**Endpoint:** https://backend.airdeveloppa.services/1/balance
+
+This endpoint shows the users balance in satoshis.
+
+#### GET Parameters
+
+- `token` (Required)
+
+### Withdraw
+
+**Endpoint:** https://backend.airdeveloppa.services/1/withdraw
+
+#### POST parameters
+
+- `token` (required. account authorization token)
+- `invoice` (required. Lightning invoice for the withdraw request)
+
 ### Verify
 
 **Endpoint:** https://backend.airdeveloppa.services/1/verify

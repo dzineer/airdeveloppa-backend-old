@@ -126,6 +126,44 @@ app.post('/1/verify', (req, res) => {
   } // end check for ID
 });
 
+// Balance endpoint
+app.get('/1/balance', (req, res) => {
+  if (req.query["token"] !== undefined) {
+    results.result = {
+      "balance": 0
+    };
+    results.meta.status = 200;
+    results.meta.msg = "Request processed successfully";
+    res.send(JSON.stringify(results));
+  } else {
+    results.meta.status = 400;
+    results.meta.msg = "Required parameters 'token'";
+    res.send(JSON.stringify(results));
+  }
+});
+
+// Withdraw endpoint
+app.get('/1/withdraw', (req, res) => {
+  results.meta.status = 400;
+  results.meta.msg = "Bad request";
+  res.send(JSON.stringify(results));
+});
+app.post('/1/withdraw', (req, res) => {
+  results.meta.status = 400;
+  results.meta.msg = "Requires 'token' and 'invoice'";
+  if (req.body["invoice"] !== undefined && req.body["token"]) {
+    results.meta.status = 200;
+    results.meta.msg = "Request processed successfully";
+    results.result = {
+      "withdraw_status": false,
+      "withdraw_msg": "Withdraw failed because this is not implemented"
+    };
+    res.send(JSON.stringify(results));
+  } else {
+    res.send(JSON.stringify(results));
+  }
+});
+
 // list endpoint
 app.get('/1/list', (req, res) => {
   results.meta.status = 400;
