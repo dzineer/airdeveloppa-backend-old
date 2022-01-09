@@ -182,6 +182,7 @@ app.get('/1/list', (req, res) => {
                 address: "16 2 Nimmanahaeminda Road, Su Thep, Mueang Chiang Mai, Chiang Mai 50200",
                 meta: {
                     "bounty": 5000,
+                    "bounty_total": 100000, 
                     "purifiers": 8,
                     "floors": 2,
                     "rating": 1,
