@@ -2,5 +2,6 @@ docker-compose.yml
 package-lock.json
 *.logs
 *.test
+postgresql.conf
 postgres/*
 node_modules/*
