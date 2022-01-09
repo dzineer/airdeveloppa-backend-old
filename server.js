@@ -73,6 +73,7 @@ app.get('/1/register', (req, res) => {
 });
 app.post('/1/register', (req, res) => {
   if (req.body["device_id"] !== undefined) {
+    // TODO: Database stuff
     // TODO: Check existing registration, otherwise ask for a token too
     results.meta.msg = "Registered";
     results.result = {
