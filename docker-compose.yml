@@ -12,11 +12,14 @@ services:
                 depends_on: [ backend ]
                 networks:
                     net:
-                        ipv4_address: 10.254.1.2
+                        ipv4_address: ${NGINXIPADDRESS}
         backend:
                 image: ${BACKENDIMAGE}
                 environment:
                         HOME: /data
+                        DBUSER: ${DBADMINUSER}
+                        DBPASS: ${DBADMINPASS}
+                        DBIP: ${DBIPADDRESS}
                 container_name: backend
                 volumes:
                         - ${PWD}/backend:/data/
@@ -24,7 +27,21 @@ services:
                 stop_grace_period: 30s
                 networks:
                     net:
-                        ipv4_address: 10.254.1.4
+                        ipv4_address: ${BACKENDIPADDRESS}
+        db:
+                image: ${DATABASEIMAGE}
+                environment:
+                        HOME: /data
+                        MONGO_INITDB_ROOT_USERNAME: ${DBADMINUSER}
+                        MONGO_INITDB_ROOT_PASSWORD: ${DBADMINPASS}
+                container_name: mongodb
+                volumes:
+                        - ${PWD}/mongodb:/data
+                restart: on-failure
+                stop_grace_period: 30s
+                networks:
+                    net:
+                        ipv4_address: ${DBIPADDRESS}
 
 networks:
     net:
