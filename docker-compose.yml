@@ -7,7 +7,7 @@ services:
                     - ${PWD}/nginx:/etc/nginx
                 restart: on-failure
                 ports:
-                    - "8000:80"
+                    - "${WEBPORT}:80"
                 stop_grace_period: 30s
                 depends_on: [ backend ]
                 networks:
