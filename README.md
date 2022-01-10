@@ -70,6 +70,7 @@ This endpoint shows the users balance in satoshis.
 
 ## Maintainer Notes
 
-- Copy `env-dist` to `.env` before starting `docker-compose.yml`
+- Copy `env-dist` to `.env` before starting `docker-compose.yml`. Configure the defaults is recommended
 - Have a `PERSONALTOKEN` variable set up in gitlab
 - When releasing push a tag
+- Ensure that there is a `mongodb` directory available in the route.
