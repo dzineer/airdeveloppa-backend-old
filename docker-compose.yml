@@ -9,7 +9,7 @@ services:
                 ports:
                     - "${WEBPORT}:80"
                 stop_grace_period: 30s
-                depends_on: [ backend ]
+                depends_on: [ backend, db ]
                 networks:
                     net:
                         ipv4_address: ${NGINXIPADDRESS}
@@ -26,6 +26,7 @@ services:
                         - ${PWD}/backend:/data/
                 restart: on-failure
                 stop_grace_period: 30s
+                depends_on: [ db ]
                 networks:
                     net:
                         ipv4_address: ${BACKENDIPADDRESS}
