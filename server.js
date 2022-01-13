@@ -216,6 +216,7 @@ app.post('/1/device_push', (req, res) => {
   if (req.body["deviceid"] !== undefined && req.body["businessid"] !== undefined && req.body["aqi"] !== undefined) {
     results.meta.status = 200;
     results.meta.msg = "Successfully processed";
+    res.send(JSON.stringify(results));
   } else {
     results.meta.status = 400;
     results.meta.msg = "Require 'deviceid', 'businessid' and 'aqi' parameter";
