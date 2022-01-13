@@ -151,7 +151,7 @@ app.get('/1/withdraw', (req, res) => {
 app.post('/1/withdraw', (req, res) => {
   results.meta.status = 400;
   results.meta.msg = "Requires 'token' and 'invoice'";
-  if (req.body["invoice"] !== undefined && req.body["token"]) {
+  if (req.body["invoice"] !== undefined && req.body["token"] !== undefined) {
     results.meta.status = 200;
     results.meta.msg = "Request processed successfully";
     results.result = {
@@ -182,7 +182,7 @@ app.get('/1/list', (req, res) => {
                 address: "16 2 Nimmanahaeminda Road, Su Thep, Mueang Chiang Mai, Chiang Mai 50200",
                 meta: {
                     "bounty": 5000,
-                    "bounty_total": 100000, 
+                    "bounty_total": 100000,
                     "purifiers": 8,
                     "floors": 2,
                     "rating": 1,
@@ -207,6 +207,18 @@ app.get('/1/list', (req, res) => {
   } else {
     results.meta.status = 400;
     results.meta.msg = "Require 'lat' and 'lng' parameter";
+    res.send(JSON.stringify(results));
+  }
+});
+
+// Begin device push API
+app.post('/1/device_push', (req, res) => {
+  if (req.body["deviceid"] !== undefined && req.body["businessid"] !== undefined && req.body["aqi"] !== undefined) {
+    results.meta.status = 200;
+    results.meta.msg = "Successfully processed";
+  } else {
+    results.meta.status = 400;
+    results.meta.msg = "Require 'deviceid', 'businessid' and 'aqi' parameter";
     res.send(JSON.stringify(results));
   }
 });
