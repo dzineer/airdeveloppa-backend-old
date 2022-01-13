@@ -228,7 +228,8 @@ app.post('/1/device_push', (req, res) => {
   } else {
     results.meta.status = 400;
     results.meta.msg = "Require 'deviceid', 'businessid' and 'aqi' parameter";
-    console.log("Invalid 'device_push' request. User sent invalid parameters");
+    console.log("Invalid 'device_push' POST request. User sent invalid parameters");
+    console.log("Parameters: " + JSON.stringify(req.body));
     res.send(JSON.stringify(results));
   }
 });
