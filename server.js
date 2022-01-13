@@ -211,19 +211,28 @@ app.get('/1/list', (req, res) => {
   }
 });
 
+app.get('/1/device_push', (req, res) => {
+  results.meta.status = 400;
+  results.meta.msg = "Must send a POST request";
+  console.log("Invalid 'device_push' request. User sent a GET rather than post");
+  res.send(JSON.stringify(results));
+});
+
 // Begin device push API
 app.post('/1/device_push', (req, res) => {
   if (req.body["deviceid"] !== undefined && req.body["businessid"] !== undefined && req.body["aqi"] !== undefined) {
     results.meta.status = 200;
     results.meta.msg = "Successfully processed";
-    console.log("Received device update: ID=" + req.body["deviceid"] + " BusinessID=" + req.body["businessid"] + " AQI=" + req.body["aqi"]); 
+    console.log("Received device update: ID=" + req.body["deviceid"] + " BusinessID=" + req.body["businessid"] + " AQI=" + req.body["aqi"]);
     res.send(JSON.stringify(results));
   } else {
     results.meta.status = 400;
     results.meta.msg = "Require 'deviceid', 'businessid' and 'aqi' parameter";
+    console.log("Invalid 'device_push' request. User sent invalid parameters");
     res.send(JSON.stringify(results));
   }
 });
+// end device push API
 // End API (express)
 
 // Start express
