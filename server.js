@@ -216,6 +216,7 @@ app.post('/1/device_push', (req, res) => {
   if (req.body["deviceid"] !== undefined && req.body["businessid"] !== undefined && req.body["aqi"] !== undefined) {
     results.meta.status = 200;
     results.meta.msg = "Successfully processed";
+    console.log("Received device update: ID=" + req.body["deviceid"] + " BusinessID=" + req.body["businessid"] + " AQI=" + req.body["aqi"]); 
     res.send(JSON.stringify(results));
   } else {
     results.meta.status = 400;
