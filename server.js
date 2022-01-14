@@ -287,6 +287,7 @@ app.post('/1/device_push', (req, res) => {
                 // insert error
                 results.meta.status = 500;
                 results.meta.msg = "Insert error";
+                client.close()
               }
               res.json(results);
             });
@@ -318,6 +319,82 @@ app.post('/1/device_push', (req, res) => {
   }
 });
 // end device push API
+
+// Admin token only
+// Business create endpoint
+app.post('/1/business', (req, res) => {
+    if (req.body !== undefined) {
+      if (req.body['token'] !== undefined) {
+        if (req.body['token'] === process.env.ADMINKEY) {
+          // Admin key match
+          if (req.body["businessname"] !== undefined && req.body['lng'] !== undefined && req.body['lat'] !== undefined && req.body["businessaddress"] !== undefined && req.body["businesscity"] !== undefined && req.body["businessregion"] !== undefined && req.body["businesscountry"] !== undefined) {
+            // check that 'businessname', 'businessaddress', 'businesscity', 'businessregion', 'businesscountry' are defined
+            MongoClient.connect(dburi, (dberr, client) => {
+              if (!dberr) {
+                // DB connect
+                var dbo = client.db(process.env.DBNAME); // Get DB object
+                var myobj = {
+                  "businessid": uuidv4(),
+                  "businessname": req.body["businessname"],
+                  "businessaddress": req.body["businessaddress"],
+                  "businesscity": req.body["businesscity"],
+                  "businessregion": req.body['businessregion'],
+                  "businesscountry": req.body['businesscountry'],
+                  "businesscoords": [parseFloat(req.body['lng']), parseFloat(req.body['lat'])],
+                  "createDate": new Date()
+                };
+                results.result = {
+                  "to_be_inserted": myobj
+                };
+                console.log("Setting up index (businesscoords), long and lat");
+                dbo.collection("business").createIndex({"businesscoords": "2dsphere"});
+
+                console.log("Prepare insert");
+                dbo.collection("business").insertOne(myobj, (colerr, dbres) => {
+                  if (!colerr) {
+                    // inserted
+                    results.meta.status = 200;
+                    results.meta.msg = "Success";
+                    results.result['businessid'] = myobj['businessid'];
+                    results.result['inserted_db_identifier'] = dbres.insertedId;
+                    client.close(); // close connection
+                  } else {
+                    // insert error
+                    results.meta.status = 500;
+                    results.meta.msg = "Insert error";
+                    client.close();
+                  }
+                  res.json(results);
+                });
+              } else {
+                results.meta.status = 500;
+                results.meta.msg = "Unable to connect to database";
+                res.send(JSON.stringify(results))
+              }
+            });
+          } else {
+            // Parameters not defined
+            results.meta.status = 400;
+            results.meta.msg = "Require 'businessname', 'businessaddress', 'businesscity', 'businessregion', 'businesscountry', 'lat', 'lng' parameters";
+            res.send(JSON.stringify(results));
+          }
+        } else {
+          // auth failed
+          results.meta.status = 401;
+          results.meta.msg = "Authentication failed";
+          res.send(JSON.stringify(results));
+        }
+      } else {
+        results.meta.status = 401;
+        results.meta.msg = "Requires authentication";
+        res.send(JSON.stringify(results));
+      }
+    } else {
+      results.meta.status = 400;
+      results.meta.msg = "Invalid request. Require 'token' and business creation details";
+      res.send(JSON.stringify(results))
+    }
+});
 // End API (express)
 
 // Start express
