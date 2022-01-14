@@ -5,8 +5,4 @@ package-lock.json
 postgresql.conf
 postgres/*
 node_modules/*
-mongodb/.dbshell
-mongodb/.mongorc.js
-mongodb/db/*
-mongodb/configdb/*
-mongodb/.bash_history
+mongodb/*
