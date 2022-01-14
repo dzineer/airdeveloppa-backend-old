@@ -52,6 +52,10 @@ app.get('/', (req, res) => {
     if (!err) {
       console.log("Connected to database");
       results.meta.msg = "Connected to database";
+      var cursor = client.db(process.env.DBNAME).command({ ping: 1 });
+      console.log("Lets try to do stuff")
+      console.log(JSON.stringify(cursor));
+      client.close(); // close connection      
     } else {
       console.log("Not connected to database");
       results.meta.msg = "Not connected to database";
@@ -59,8 +63,6 @@ app.get('/', (req, res) => {
       results.result = {
         "error": err
       };
-      client.db("admin").command({ ping: 1 });
-      client.close(); // close connection
       console.log(JSON.stringify(err));
     }
     res.send(JSON.stringify(results));
