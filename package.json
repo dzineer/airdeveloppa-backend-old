@@ -1,6 +1,6 @@
 {
   "name": "backend",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "description": "Air Developpa Backend",
   "main": "server.js",
   "scripts": {
@@ -12,6 +12,7 @@
     "express": "^4.17.2",
     "koa": "^2.13.4",
     "koa-body": "^4.2.0",
+    "mongodb": "^4.3.0",
     "pg": "^8.7.1",
     "uuid": "^8.3.2"
   }
