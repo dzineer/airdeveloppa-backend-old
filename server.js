@@ -25,7 +25,6 @@ const password = encodeURIComponent(process.env.DBPASS);
 const authMechanism = "DEFAULT";
 const dburi =
   `mongodb://${username}:${password}@${process.env.DBIP}:${process.env.DBPORT}/?authMechanism=${authMechanism}`;
-console.log(dburi);
 
 // express body parser
 app.use(express.json()) // for parsing application/json
