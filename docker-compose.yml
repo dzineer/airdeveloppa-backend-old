@@ -22,6 +22,7 @@ services:
                         DBIP: ${DBIPADDRESS}
                         DBPORT: ${DBPORT}
                         DBNAME: ${DBNAME}
+                        ADMINKEY: ${ADMINKEY}
                 container_name: backend
                 volumes:
                         - ${PWD}/backend:/data/
