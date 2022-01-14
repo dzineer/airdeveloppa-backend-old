@@ -11,7 +11,7 @@ docker login registry.gitlab.com -u nolim1t
 docker pull registry.gitlab.com/nolim1t/airdeveloppa-backend:latest
 
 # Pull specific version
-docker pull registry.gitlab.com/nolim1t/airdeveloppa-backend:v0.1.3
+docker pull registry.gitlab.com/nolim1t/airdeveloppa-backend:v0.1.11
 ```
 
 ## Sample endpoints
@@ -67,6 +67,15 @@ This endpoint shows the users balance in satoshis.
 - `token` (required. This is the authentication token. You should keep this safe)
 - `id` (required. This is the device UUID)
 - `fakeVerify` (for testing. If you set this to false this will simulate a fail response)
+
+### Device push
+
+**Endpoint:** https://backend.airdeveloppa.services/1/device_push
+
+#### POST notes
+
+- Must send a ```Content-Type: application/json``` header
+- Must send a JSON object with the following parameters `businessid`, `deviceid`, and `AQI`
 
 ## Maintainer Notes
 

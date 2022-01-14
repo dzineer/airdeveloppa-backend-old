@@ -220,17 +220,37 @@ app.get('/1/device_push', (req, res) => {
 
 // Begin device push API
 app.post('/1/device_push', (req, res) => {
-  if (req.body["deviceid"] !== undefined && req.body["businessid"] !== undefined && req.body["aqi"] !== undefined) {
-    results.meta.status = 200;
-    results.meta.msg = "Successfully processed";
-    console.log("Received device update: ID=" + req.body["deviceid"] + " BusinessID=" + req.body["businessid"] + " AQI=" + req.body["aqi"]);
-    res.send(JSON.stringify(results));
-  } else {
-    results.meta.status = 400;
-    results.meta.msg = "Require 'deviceid', 'businessid' and 'aqi' parameter";
-    console.log("Invalid 'device_push' POST request. User sent invalid parameters");
-    console.log("Parameters: " + JSON.stringify(req.body));
-    res.send(JSON.stringify(results));
+  try {
+    if (req.body !== undefined) {
+      var device_push_obj = JSON.parse(JSON.stringify(req.body));
+      if (device_push_obj["deviceid"] !== undefined && device_push_obj["businessid"] !== undefined && device_push_obj["AQI"] !== undefined) {
+        results.meta.status = 200;
+        results.meta.msg = "Processed successfully";
+        results.result = {
+          "deviceid": device_push_obj["deviceid"],
+          "businessid": device_push_obj["businessid"],
+          "AQI": device_push_obj["AQI"]
+        }
+        console.log("Device logged. deviceid=" + device_push_obj["deviceid"] + " business id=" + device_push_obj["businessid"] + " AQI=" + device_push_obj["AQI"]);
+        res.json(results);
+      } else {
+        console.log("Invalid request type");
+        console.log("Body: " + JSON.stringify(req.body));
+        results.meta.status = 400;
+        results.meta.msg = "JSON block requires 'deviceid', 'businessid', and 'AQI' attributes, and header 'application/json' must be specified";
+        res.json(results);
+      }
+    } else {
+      results.meta.status = 400;
+      results.meta.msg = "Invalid JSON";
+      res.send(results);
+    }
+  } catch (e) {
+    console.log("Error trapped");
+    console.log(e);
+    results.meta.status = 500;
+    results.meta.msg = "Invalid request";
+    res.send(JSON.stringify(results))
   }
 });
 // end device push API
