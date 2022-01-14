@@ -14,6 +14,14 @@ docker pull registry.gitlab.com/nolim1t/airdeveloppa-backend:latest
 docker pull registry.gitlab.com/nolim1t/airdeveloppa-backend:v0.1.11
 ```
 
+## MongoDB
+
+Some sample mongodb commands
+
+```bash
+docker exec -it mongodb mongo -uroot -ppasssword
+```
+
 ## Sample endpoints
 
 ### Register
