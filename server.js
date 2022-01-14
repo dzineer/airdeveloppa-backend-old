@@ -24,8 +24,8 @@ const username = encodeURIComponent(process.env.DBADMINUSER);
 const password = encodeURIComponent(process.env.DBADMINPASS);
 const authMechanism = "DEFAULT";
 const dburi =
-  `mongodb+srv://${username}:${password}@${process.env.DBIPADDRESS}:${process.env.DBPORT}/?authMechanism=${authMechanism}`;
-
+  `mongodb://${username}:${password}@${process.env.DBIPADDRESS}:${process.env.DBPORT}/?authMechanism=${authMechanism}`;
+console.log(dburi);
 
 // express body parser
 app.use(express.json()) // for parsing application/json
@@ -51,9 +51,10 @@ app.get('/', (req, res) => {
   results.meta.msg = "Success";
   MongoClient.connect(dburi, (err, client) => {
     if (!err) {
-      console.log("Connected to database")
+      console.log("Connected to database");
     } else {
       console.log("Not connected to database");
+      console.log(JSON.stringify(err));
     }
     res.send(JSON.stringify(results));
   })
