@@ -9,3 +9,4 @@ mongodb/.dbshell
 mongodb/.mongorc.js
 mongodb/db/*
 mongodb/configdb/*
+mongodb/.bash_history
