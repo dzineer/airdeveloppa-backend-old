@@ -59,6 +59,8 @@ app.get('/', (req, res) => {
       results.result = {
         "error": err
       };
+      client.db("admin").command({ ping: 1 });
+      client.close(); // close connection
       console.log(JSON.stringify(err));
     }
     res.send(JSON.stringify(results));
