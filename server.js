@@ -20,11 +20,11 @@ var crypto = require('crypto');
 
 // MongoDB
 const { MongoClient } = require("mongodb");
-const username = encodeURIComponent(process.env.DBADMINUSER);
-const password = encodeURIComponent(process.env.DBADMINPASS);
+const username = encodeURIComponent(process.env.DBUSER);
+const password = encodeURIComponent(process.env.DBPASS);
 const authMechanism = "DEFAULT";
 const dburi =
-  `mongodb://${username}:${password}@${process.env.DBIPADDRESS}:${process.env.DBPORT}/?authMechanism=${authMechanism}`;
+  `mongodb://${username}:${password}@${process.env.DBIP}:${process.env.DBPORT}/?authMechanism=${authMechanism}`;
 console.log(dburi);
 
 // express body parser
@@ -52,8 +52,14 @@ app.get('/', (req, res) => {
   MongoClient.connect(dburi, (err, client) => {
     if (!err) {
       console.log("Connected to database");
+      results.meta.msg = "Connected to database";
     } else {
       console.log("Not connected to database");
+      results.meta.msg = "Not connected to database";
+      results.meta.status = 500;
+      results.result = {
+        "error": err
+      };
       console.log(JSON.stringify(err));
     }
     res.send(JSON.stringify(results));
