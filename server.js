@@ -18,18 +18,14 @@ const { v4: uuidv4 } = require('uuid');
 // For generating hashes
 var crypto = require('crypto');
 
-// create PG Client
-/*
-const { Client } = require('pg');
-const client = new Client({
-      host: process.env.DBHOST || '10.254.1.6',
-      port: process.env.DBPORT || 5432,
-      user: process.env.DBUSER || 'pgadmin',
-      password: process.env.DBPASS || 'secretaccess',
-})
+// MongoDB
+const { MongoClient } = require("mongodb");
+const username = encodeURIComponent(process.env.DBADMINUSER);
+const password = encodeURIComponent(process.env.DBADMINPASS);
+const authMechanism = "DEFAULT";
+const dburi =
+  `mongodb+srv://${username}:${password}@${process.env.DBIPADDRESS}:${process.env.DBPORT}/?authMechanism=${authMechanism}`;
 
-const app = new Koa();
-*/
 
 // express body parser
 app.use(express.json()) // for parsing application/json
@@ -53,7 +49,14 @@ app.use(function (req, res, next) {
 app.get('/', (req, res) => {
   results.meta.status = 200;
   results.meta.msg = "Success";
-  res.send(JSON.stringify(results));
+  MongoClient.connect(dburi, (err, client) => {
+    if (!err) {
+      console.log("Connected to database")
+    } else {
+      console.log("Not connected to database");
+    }
+    res.send(JSON.stringify(results));
+  })
 });
 
 app.post('/', (req, res) => {
