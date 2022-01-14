@@ -231,6 +231,9 @@ app.post('/1/device_push', (req, res) => {
           "businessid": device_push_obj["businessid"],
           "AQI": device_push_obj["AQI"]
         }
+        if (device_push_obj["timestamp"] !== undefined) {
+          console.log("Timestamp on their end: " + device_push_obj["timestamp"]);
+        }
         console.log("Device logged. deviceid=" + device_push_obj["deviceid"] + " business id=" + device_push_obj["businessid"] + " AQI=" + device_push_obj["AQI"]);
         res.json(results);
       } else {
