@@ -55,7 +55,6 @@ app.get('/', (req, res) => {
           // no errors
           results.meta.status = 200;
           results.meta.msg = "Success";
-          console.log(JSON.stringify(dbres));
           results.result['inserted_identifier'] = dbres.insertedId;
           client.close(); // close connection
           res.send(JSON.stringify(results));
@@ -258,8 +257,46 @@ app.post('/1/device_push', (req, res) => {
         if (device_push_obj["timestamp"] !== undefined) {
           console.log("Timestamp on their end: " + device_push_obj["timestamp"]);
         }
-        console.log("Device logged. deviceid=" + device_push_obj["deviceid"] + " business id=" + device_push_obj["businessid"] + " AQI=" + device_push_obj["AQI"]);
-        res.json(results);
+        MongoClient.connect(dburi, (err, client) => {
+          if (!err) {
+            // no error
+            console.log("Device logged. deviceid=" + device_push_obj["deviceid"] + " business id=" + device_push_obj["businessid"] + " AQI=" + device_push_obj["AQI"]);
+            var dbo = client.db(process.env.DBNAME); // Get DB object
+            var myobj = {
+              "businessid": device_push_obj["businessid"],
+              "deviceid": device_push_obj["deviceid"],
+              "AQI": device_push_obj["AQI"],
+              "timestamp": new Date().getTime().toString(),
+              "createDate": new Date
+            };
+            results.result = {
+              "to_be_inserted": myobj
+            };
+            // create index
+            console.log("Setting up index");
+            dbo.collection("devicelog").createIndex({"createDate": 1}, {"expireAfterSeconds": 86400});
+            console.log("Prepare insert");
+            dbo.collection("devicelog").insertOne(myobj, (colerr, dbres) => {
+              if (!colerr) {
+                // inserted
+                results.meta.status = 200;
+                results.meta.msg = "Success";
+                results.result['inserted_identifier'] = dbres.insertedId;
+                client.close(); // close connection
+              } else {
+                // insert error
+                results.meta.status = 500;
+                results.meta.msg = "Insert error";                
+              }
+              res.json(results);
+            });
+          } else {
+            // err connecting
+            results.meta.status = 500;
+            results.meta.msg = "Error connecting to database";
+            res.json(results);
+          }
+        });
       } else {
         console.log("Invalid request type");
         console.log("Body: " + JSON.stringify(req.body));
