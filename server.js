@@ -55,21 +55,23 @@ app.get('/', (req, res) => {
       var dbo = client.db(process.env.DBNAME); // Get DB object
       var myobj = { name: "Test object", timestamp: new Date().getTime().toString() };
       results.result = {
-        inserted: myobj
+        "to_be_inserted": myobj
       };
-      dbo.collection("testcol").insertOne(myobj, (err, dbres) => {
-        if (!err) {
+      dbo.collection("testcol").insertOne(myobj, (colerr, dbres) => {
+        if (!colerr) {
           // no errors
           results.meta.status = 200;
           results.meta.msg = "Success";
-          results.result['inserted'] = dbres.ops;
+          results.result['inserted_identifier'] = dbres.insertedId;
+          client.close(); // close connection
+          res.send(JSON.stringify(results));
         } else {
           // errors
           results.meta.status = 500;
           results.meta.msg = "Error inserting to database";
+          client.close(); // close connection
+          res.send(JSON.stringify(results));
         }
-        res.send(JSON.stringify(results));
-        client.close(); // close connection
       });
     } else {
       console.log("Not connected to database");
