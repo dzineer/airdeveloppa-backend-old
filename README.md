@@ -1,5 +1,11 @@
 # AirDeveloppa Backend
 
+* [Running on docker](#running-docker)
+* [MongoDB Commands](#mongodb)
+* [Maintainer Notes](#maintainer-notes)
+* [Generating an admin key](#generating-an-admin-key)
+* [Endpoint Descriptions](#sample-endpoints)
+
 ## Running (Docker)
 
 ```
@@ -11,7 +17,7 @@ docker login registry.gitlab.com -u nolim1t
 docker pull registry.gitlab.com/nolim1t/airdeveloppa-backend:latest
 
 # Pull specific version
-docker pull registry.gitlab.com/nolim1t/airdeveloppa-backend:v0.1.11
+docker pull registry.gitlab.com/nolim1t/airdeveloppa-backend:v0.1.16
 ```
 
 ## MongoDB
