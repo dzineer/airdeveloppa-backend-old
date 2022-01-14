@@ -62,7 +62,7 @@ app.get('/', (req, res) => {
           // no errors
           results.meta.status = 200;
           results.meta.msg = "Success";
-          results.result['id'] = dbres.insertedId;
+          results.result['inserted'] = dbres.ops;
         } else {
           // errors
           results.meta.status = 500;
