@@ -1,10 +1,3 @@
-/*
-const Koa = require('koa');
-const compose = require('koa-compose');
-var bodyParser = require('koa-body');
-
-*/
-
 // Web server parameters
 const express = require('express')
 const app = express()
@@ -62,6 +55,7 @@ app.get('/', (req, res) => {
           // no errors
           results.meta.status = 200;
           results.meta.msg = "Success";
+          console.log(JSON.stringify(dbres));
           results.result['inserted_identifier'] = dbres.insertedId;
           client.close(); // close connection
           res.send(JSON.stringify(results));
