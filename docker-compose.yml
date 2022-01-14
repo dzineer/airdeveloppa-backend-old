@@ -21,6 +21,7 @@ services:
                         DBPASS: ${DBADMINPASS}
                         DBIP: ${DBIPADDRESS}
                         DBPORT: ${DBPORT}
+                        DBNAME: ${DBNAME}
                 container_name: backend
                 volumes:
                         - ${PWD}/backend:/data/

@@ -52,10 +52,25 @@ app.get('/', (req, res) => {
     if (!err) {
       console.log("Connected to database");
       results.meta.msg = "Connected to database";
-      var cursor = client.db(process.env.DBNAME).command({ ping: 1 });
-      console.log("Lets try to do stuff")
-      console.log(JSON.stringify(cursor));
-      client.close(); // close connection      
+      var dbo = client.db(process.env.DBNAME); // Get DB object
+      var myobj = { name: "Test object", timestamp: new Date().getTime().toString() };
+      results.result = {
+        inserted: myobj
+      };
+      dbo.collection("testcol").insertOne(myobj, (err, dbres) => {
+        if (!err) {
+          // no errors
+          results.meta.status = 200;
+          results.meta.msg = "Success";
+          results.result['id'] = dbres.insertedId;
+        } else {
+          // errors
+          results.meta.status = 500;
+          results.meta.msg = "Error inserting to database";
+        }
+        res.send(JSON.stringify(results));
+        client.close(); // close connection
+      });
     } else {
       console.log("Not connected to database");
       results.meta.msg = "Not connected to database";
@@ -64,8 +79,8 @@ app.get('/', (req, res) => {
         "error": err
       };
       console.log(JSON.stringify(err));
+      res.send(JSON.stringify(results));
     }
-    res.send(JSON.stringify(results));
   })
 });
 
