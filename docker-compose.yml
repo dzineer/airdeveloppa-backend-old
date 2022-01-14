@@ -39,7 +39,7 @@ services:
                         MONGO_INITDB_ROOT_PASSWORD: ${DBADMINPASS}
                 container_name: mongodb
                 volumes:
-                        - ${PWD}/mongodb:/data
+                        - ${PWD}/mongodb:/data/db
                 ports:
                     - "${DBEXTERNALPORT}:${DBPORT}"
                 restart: on-failure
