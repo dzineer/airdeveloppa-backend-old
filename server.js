@@ -286,7 +286,7 @@ app.post('/1/device_push', (req, res) => {
               } else {
                 // insert error
                 results.meta.status = 500;
-                results.meta.msg = "Insert error";                
+                results.meta.msg = "Insert error";
               }
               res.json(results);
             });
