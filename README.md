@@ -91,3 +91,9 @@ This endpoint shows the users balance in satoshis.
 - Have a `PERSONALTOKEN` variable set up in gitlab
 - When releasing push a tag
 - Ensure that there is a `mongodb` directory available in the route.
+
+## Generating an admin key
+
+```bash
+node -e 'var crypto = require("crypto"); var adminkey = crypto.createHash("sha256").update(crypto.createHash("sha256").update("admin" + "||" + (new Date().getTime()).toString()).digest("hex")).digest("hex"); console.log(adminkey);'
+```
