@@ -12,7 +12,7 @@ const { v4: uuidv4 } = require('uuid');
 var crypto = require('crypto');
 
 // MongoDB
-const { MongoClient } = require("mongodb");
+const { MongoClient, ObjectID } = require("mongodb");
 const username = encodeURIComponent(process.env.DBUSER);
 const password = encodeURIComponent(process.env.DBPASS);
 const authMechanism = "DEFAULT";
@@ -321,7 +321,110 @@ app.post('/1/device_push', (req, res) => {
 // end device push API
 
 // Admin token only
+// Device create endpoint
+app.get('/1/deviceregister', (req, res) => {
+  results.meta.status = 400;
+  results.meta.msg = "This endpoint only accepts POST requests";
+  res.send(JSON.stringify(results))
+});
+app.post('/1/deviceregister', (req, res) => {
+  if (req.body !== undefined) {
+    if (req.body['token'] !== undefined && req.body['businessid'] !== undefined) {
+      if (req.body['token'] === process.env.ADMINKEY) {
+        if (req.body["businessid"] !== undefined) {
+          MongoClient.connect(dburi, (dberr, client) => {
+            if (!dberr) {
+              var dbo = client.db(process.env.DBNAME); // Get DB object
+              var updatequery = {
+                "businessid": req.body['businessid']
+              };
+              var deviceid = uuidv4();
+              var deviceobj = {
+                "_id": new ObjectID(),
+                "deviceid": deviceid,
+                "devicebounty": 0
+              };
+              // optional devicelocation
+              if (req.body['devicelocation'] !== undefined) {
+                deviceobj['devicelocation'] = req.body['devicelocation'];
+              }
+              // optional devicelabel
+              if (req.body['devicelabel'] !== undefined) {
+                deviceobj['devicelabel'] = req.body['devicelabel'];
+              }
+              // Add verify bounty
+              if (req.body['devicebounty'] !== undefined) {
+                deviceobj['devicebounty'] = parseInt(req.body['devicebounty']);
+              }
+              var updateddata = {
+                "$addToSet": {
+                  "devices": deviceobj
+                }
+              };
+              // do query (add to business)
+              dbo.collection("business").update(updatequery, updateddata, (updateerr, updateres) => {
+                if (!updateerr) {
+                  if (updateres["modifiedCount"] === 0) {
+                    results.meta.status = 400;
+                    results.meta.msg = "Device not added";
+                  } else {
+                    // Device added
+                    results.meta.status = 200;
+                    results.meta.msg = "Added device";
+                  }
+                  results.result = {
+                    "deviceid": deviceid,
+                    "addToSet": updateddata,
+                    "affectedCount": updateres["modifiedCount"]
+                  }
+                  res.send(JSON.stringify(results));
+                } else {
+                  results.meta.status = 500;
+                  results.meta.msg = "Error executing query";
+                  results.meta.query = {
+                    "query": updatequery,
+                    "update": updateddata
+                  };
+                  results.result = {
+                    "error": updateerrr
+                  };
+                  res.send(JSON.stringify(results))
+                }
+              });
+            } else {
+              results.meta.status = 500;
+              results.meta.msg = "Database connect error";
+              res.send(JSON.stringify(results))
+            }
+          });
+        } else {
+          results.meta.status = 400;
+          results.meta.msg = "Requires a 'businessid' to register the device to  (optional: 'devicelocation', 'devicelabel')";
+          res.send(JSON.stringify(results))
+        }
+      } else {
+        results.meta.status = 401;
+        results.meta.msg = "Authentication failed";
+        res.send(JSON.stringify(results))
+      }
+    } else {
+      results.meta.status = 400;
+      results.meta.msg = "Invalid request. Require admin 'token', 'businessid' (optional: 'devicelocation', 'devicelabel')";
+      res.send(JSON.stringify(results))
+    }
+  } else {
+    results.meta.status = 400;
+    results.meta.msg = "Invalid request. Require admin 'token', 'businessid'  (optional: 'devicelocation', 'devicelabel')";
+    res.send(JSON.stringify(results))
+  }
+});
+
 // Business create endpoint
+app.get('/1/business', (req, res) => {
+  results.meta.status = 400;
+  results.meta.msg = "This endpoint only accepts POST requests";
+  res.send(JSON.stringify(results))
+});
 app.post('/1/business', (req, res) => {
     if (req.body !== undefined) {
       if (req.body['token'] !== undefined) {
