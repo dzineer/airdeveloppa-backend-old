@@ -377,6 +377,7 @@ app.post('/1/deviceregister', (req, res) => {
                     "addToSet": updateddata,
                     "affectedCount": updateres["modifiedCount"]
                   }
+                  client.close(); // close connection
                   res.send(JSON.stringify(results));
                 } else {
                   results.meta.status = 500;
@@ -388,12 +389,14 @@ app.post('/1/deviceregister', (req, res) => {
                   results.result = {
                     "error": updateerrr
                   };
+                  client.close(); // close connection
                   res.send(JSON.stringify(results))
                 }
               });
             } else {
               results.meta.status = 500;
               results.meta.msg = "Database connect error";
+              client.close(); // close connection
               res.send(JSON.stringify(results))
             }
           });
@@ -472,6 +475,7 @@ app.post('/1/business', (req, res) => {
               } else {
                 results.meta.status = 500;
                 results.meta.msg = "Unable to connect to database";
+                client.close(); // close connection
                 res.send(JSON.stringify(results))
               }
             });
