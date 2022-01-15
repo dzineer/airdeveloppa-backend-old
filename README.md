@@ -98,6 +98,36 @@ This endpoint shows the users balance in satoshis.
 - When releasing push a tag
 - Ensure that there is a `mongodb` directory available in the route.
 
+### Admin endpoints
+
+#### Business Register
+
+**Endpoint:** POST https://backend.airdeveloppa.services/1/business
+
+##### parameters
+
+- 'businessname'
+- 'businessaddress'
+- 'businesscity' (eg. Chiang Mai)
+- 'businessregion' (eg. Chiang Mai)
+- 'businesscountry' (eg. TH)
+- 'lat' - latitude of business
+- 'lng' - longitude of busines
+
+#### Device register
+
+**Endpoint:** POST https://backend.airdeveloppa.services/1/deviceregister
+
+##### parameters
+
+- `token` - Admin authentication
+- `businessid` - to associate a device with a business.
+- `devicebounty` - Bounty in satoshis
+- `devicelabel` - freeform label of the device
+- `devicelocation` - freeform location of device
+
+#### Device register
+
 ## Generating an admin key
 
 ```bash
