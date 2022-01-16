@@ -132,7 +132,13 @@ curl "https://backend.airdeveloppa.services/1/business" \
 - `devicelabel` - freeform label of the device
 - `devicelocation` - freeform location of device
 
-#### Device register
+```bash
+curl "https://backend.airdeveloppa.services/1/deviceregister" \
+-H "Content-type: application/json" \
+-d '{"token": "", "businessid": "70c59c79-66f9-4c1f-938d-91c5dc2fd208", "devicelocation": "Upstairs", "devicelabel": "Corner Bistro test"}'
+```
+
+#### Generating admin key
 
 ## Generating an admin key
 
