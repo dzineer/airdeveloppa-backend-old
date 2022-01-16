@@ -106,13 +106,14 @@ This endpoint shows the users balance in satoshis.
 
 ##### parameters
 
-- 'businessname'
-- 'businessaddress'
-- 'businesscity' (eg. Chiang Mai)
-- 'businessregion' (eg. Chiang Mai)
-- 'businesscountry' (eg. TH)
-- 'lat' - latitude of business
-- 'lng' - longitude of busines
+- `token` - Admin authentication
+- `businessname`
+- `businessaddress`
+- `businesscity` (eg. Chiang Mai)
+- `businessregion` (eg. Chiang Mai)
+- `businesscountry` (eg. TH)
+- `lat` - latitude of business
+- `lng` - longitude of busines
 
 ```bash
 # Example
