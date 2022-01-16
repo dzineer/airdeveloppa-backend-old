@@ -114,6 +114,12 @@ This endpoint shows the users balance in satoshis.
 - 'lat' - latitude of business
 - 'lng' - longitude of busines
 
+```bash
+# Example
+curl "https://backend.airdeveloppa.services/1/business" \
+-H "Content-type: application/json" \
+-d '{"token": "security token", "businessname": "Corner Bistro & Burrito Squad", "businessaddress": "8, 8 Ratchaphuek Alley", "businesscity": "Chiang Mai", "businessregion": "Chiang Mai", "businesscountry": "TH", "lat": 18.798663671992312, "lng": 98.97526790697208}'
+```
 #### Device register
 
 **Endpoint:** POST https://backend.airdeveloppa.services/1/deviceregister
