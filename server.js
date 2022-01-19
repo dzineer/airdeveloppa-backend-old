@@ -1,10 +1,13 @@
 // Web server parameters
 const express = require('express')
 const app = express()
-const port = 3000
 
 // for envirobment
 const process = require("process");
+
+// define web port
+const port = process.env.BACKENDPORT || 3000;
+
 // for uuid
 const { v4: uuidv4 } = require('uuid');
 
@@ -531,6 +534,69 @@ app.post('/1/business', (req, res) => {
       results.meta.msg = "Invalid request. Require 'token' and business creation details";
       res.send(JSON.stringify(results))
     }
+});
+
+app.post('/1/validatedevice', (req, res) => {
+  // db.business.find({"businessid": "70c59c79-66f9-4c1f-938d-91c5dc2fd208", "devices.deviceid": "b27fb2a5-89ce-4613-9239-356f0fe7ddf3"}).count()
+  if (req.body !== undefined) {
+    if (req.body['businessid'] !== undefined && req.body['deviceid'] !== undefined) {
+      MongoClient.connect(dburi, (dberr, client) => {
+        if (!dberr) {
+          var dbo = client.db(process.env.DBNAME); // Get DB object
+          var  validatequery = {
+            "businessid": req.body["businessid"],
+            "devices.deviceid": req.body["deviceid"]
+          };
+          dbo.collection("business").find(validatequery).toArray((vdErr, vdResult) => {
+            if (!vdErr) {
+              if (vdResult.length === 1) {
+                results.meta.status = 200;
+                results.meta.msg = "Found";
+                results.result = {
+                  found: true,
+                  count: vdResult.length
+                };
+              } else {
+                results.meta.status = 404;
+                results.meta.msg = "Not found";
+                results.result = {
+                  found: false,
+                  count: vdResult.length
+                };
+              }
+              client.close(); // close connection
+              res.send(JSON.stringify(results))
+            } else {
+              console.log(vdErr);
+              results.meta.status = 500;
+              results.meta.msg = "Error performing query";
+              results.meta.debug = vdErr;
+              results.result = {
+                query: validatequery
+              }
+              client.close(); // close connection
+              res.send(JSON.stringify(results))
+            }
+          })
+        } else {
+          results.meta.status = 500;
+          results.meta.msg = "Error connecting to database";
+          client.close(); // close connection
+          res.send(JSON.stringify(results))
+        }
+      });
+    } else {
+      client.close(); // close connection
+      results.meta.status = 400;
+      results.meta.msg = "Invalid request. Requires 'businessid' and 'deviceid'";
+      res.send(JSON.stringify(results))
+    }
+  } else {
+    client.close(); // close connection
+    results.meta.status = 400;
+    results.meta.msg = "Invalid request. Requires 'businessid' and 'deviceid'";
+    res.send(JSON.stringify(results))
+  }
 });
 // End API (express)
 
