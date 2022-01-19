@@ -260,18 +260,43 @@ app.post('/1/device_push', (req, res) => {
         MongoClient.connect(dburi, (err, client) => {
           if (!err) {
             // no error
+            // db.business.find({"businessid": "c8be9040-43ca-4e1e-a029-61bccf0fa546", "devices.deviceid": "c65d3c6d-4f05-4054-9929-c6aafe9996be"})
+            // db.business.update({"businessid": "c8be9040-43ca-4e1e-a029-61bccf0fa546", "devices.deviceid": "c65d3c6d-4f05-4054-9929-c6aafe9996be"}, {"$set": {"devices.0.AQI": 69}})
             console.log("Device logged. deviceid=" + device_push_obj["deviceid"] + " business id=" + device_push_obj["businessid"] + " AQI=" + device_push_obj["AQI"]);
             var dbo = client.db(process.env.DBNAME); // Get DB object
             var myobj = {
               "businessid": device_push_obj["businessid"],
               "deviceid": device_push_obj["deviceid"],
-              "AQI": device_push_obj["AQI"],
-              "timestamp": new Date().getTime().toString(),
+              "AQI": parseInt(device_push_obj["AQI"]),
+              "timestamp": parseInt(new Date().getTime()),
               "createDate": new Date
             };
+            var updatequery = {
+              "businessid": device_push_obj["businessid"],
+              "devices.deviceid": device_push_obj["deviceid"]
+            };
+            var updatecmd = {
+              "$set": {
+                "devices.0.AQI": parseInt(device_push_obj["AQI"]),
+                "devices.0.updateTS": parseInt(new Date().getTime()),
+                "devices.0.updateDate": new Date()
+              }
+            };
+            // Update business collection
+            // Don't block the result run asynchronously
+            dbo.collection("business").updateOne(updatequery, updatecmd, (updaterr, updateres) => {
+              if (!updaterr) {
+                // no error
+                console.log("Device record in business collection updated (" + JSON.stringify(updateres) + ")");
+              } else {
+                // error
+                console.log("Error updating business collection (" + JSON.stringify(updaterr) + ")");
+              }
+            })
             results.result = {
               "to_be_inserted": myobj
             };
+            // Below wait for the results
             // create index
             console.log("Setting up index");
             dbo.collection("devicelog").createIndex({"createDate": 1}, {"expireAfterSeconds": 86400});
@@ -342,7 +367,12 @@ app.post('/1/deviceregister', (req, res) => {
               var deviceobj = {
                 "_id": new ObjectID(),
                 "deviceid": deviceid,
-                "devicebounty": 0
+                "devicelabel": "Unlabeled device",
+                "devicelocation": "Unlocated device",
+                "devicebounty": 0,
+                "createDate": new Date(),
+                "updateDate": new Date()
+
               };
               // optional devicelocation
               if (req.body['devicelocation'] !== undefined) {
