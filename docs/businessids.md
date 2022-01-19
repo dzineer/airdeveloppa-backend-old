@@ -36,9 +36,9 @@ curl "http://localhost:8000/1/deviceregister" \
 ### Create a new AQI entry
 
 ```bash
-curl "http://localhost:8000/1/device_push" \   
+curl "http://localhost:8000/1/device_push" \
 -H "Content-type: application/json" \
--d '{"businessid": "c8be9040-43ca-4e1e-a029-61bccf0fa546", "deviceid": "c65d3c6d-4f05-4054-9929-c6aafe9996be", "AQI": 69}'
+-d '{"businessid": "a1d64180-ad85-43bc-aba5-9b492e277920", "deviceid": "354dcead-e0fe-451a-9038-0c3ce8244349", "AQI": 69}'
 ```
 
 ## Businesses
