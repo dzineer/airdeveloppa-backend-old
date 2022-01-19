@@ -146,3 +146,11 @@ curl "https://backend.airdeveloppa.services/1/deviceregister" \
 ```bash
 node -e 'var crypto = require("crypto"); var adminkey = crypto.createHash("sha256").update(crypto.createHash("sha256").update("admin" + "||" + (new Date().getTime()).toString()).digest("hex")).digest("hex"); console.log(adminkey);'
 ```
+
+## Validating a device ID (No auth needed)
+
+```bash
+curl "https://backend.airdeveloppa.services/1/validatedevice" \
+-H "Content-type: application/json" \
+-d '{"businessid": "", "deviceid": ""}'
+```
