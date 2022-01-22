@@ -315,9 +315,9 @@ app.post('/1/device_push', (req, res) => {
             };
             var updatecmd = {
               "$set": {
-                "devices.0.AQI": parseInt(device_push_obj["AQI"]),
-                "devices.0.updateTS": parseInt(new Date().getTime()),
-                "devices.0.updateDate": new Date()
+                "devices.$.AQI": parseInt(device_push_obj["AQI"]),
+                "devices.$.updateTS": parseInt(new Date().getTime()),
+                "devices.$.updateDate": new Date()
               }
             };
             // Update business collection
