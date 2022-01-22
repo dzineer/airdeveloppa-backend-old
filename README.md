@@ -82,6 +82,15 @@ This endpoint shows the users balance in satoshis.
 - `id` (required. This is the device UUID)
 - `fakeVerify` (for testing. If you set this to false this will simulate a fail response)
 
+### Device Info
+
+**Endpoint:** https://backend.airdeveloppa.services/1/deviceinfo/UUID
+
+#### GET Notes
+
+- Requires a `uuid` as part of the GET parameters
+- Returns the business associated with the device along with the device(s) as the response
+
 ### Device push
 
 **Endpoint:** https://backend.airdeveloppa.services/1/device_push
@@ -89,7 +98,7 @@ This endpoint shows the users balance in satoshis.
 #### POST notes
 
 - Must send a ```Content-Type: application/json``` header
-- Must send a JSON object with the following parameters `businessid`, `deviceid`, and `AQI`
+- Must send a JSON object with the following parameters `deviceid`, and `AQI`
 
 ## Maintainer Notes
 
