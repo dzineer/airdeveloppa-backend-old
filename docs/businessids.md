@@ -50,3 +50,4 @@ curl "http://localhost:8000/1/device_push" \
 ## Devices
 
 * `c65d3c6d-4f05-4054-9929-c6aafe9996be` (Device to use)
+* `fb450036-2acd-4a34-93cc-cdc90ca60b9b` (another device)
