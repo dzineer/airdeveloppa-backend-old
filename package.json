@@ -9,6 +9,7 @@
   "author": "nolim1t",
   "license": "MIT",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.2",
     "koa": "^2.13.4",
     "koa-body": "^4.2.0",
