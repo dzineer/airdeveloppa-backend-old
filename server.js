@@ -237,6 +237,44 @@ app.get('/1/list', (req, res) => {
   }
 });
 
+// deviceinfo
+app.get('/1/deviceinfo/:id', (req, res) => {
+    MongoClient.connect(dburi, (err, client) => {
+      if (!err) {
+        results.meta.status = 200;
+        results.meta.msg = "Done";
+        var dbo = client.db(process.env.DBNAME); // Get DB object
+        var device_query_obj = {
+          "devices.deviceid": req.params.id
+        };
+        var device_query_filter = {
+          "devices": {
+            "$elemMatch": {"deviceid": req.params.id}
+          }
+        };
+        results.result = {
+          "idsent": req.params.id,
+          "query": device_query_obj
+        };
+        dbo.collection("business").find(device_query_obj, {projection: device_query_filter}).toArray((devinfoErr, devinfoRes) => {
+          if (!devinfoErr) {
+            results.result = devinfoRes;
+            res.send(JSON.stringify(results));
+          } else {
+            console.log("query error: " + devinfoErr);
+            results.meta.status = 500;
+            results.meta.msg = "Database query error";
+            res.send(JSON.stringify(results));
+          }
+        });
+      } else {
+        results.meta.status = 500;
+        results.meta.msg = "Database connection error";
+        res.send(JSON.stringify(results));
+      }
+    });
+})
+
 app.get('/1/device_push', (req, res) => {
   results.meta.status = 400;
   results.meta.msg = "Must send a POST request";
@@ -249,12 +287,11 @@ app.post('/1/device_push', (req, res) => {
   try {
     if (req.body !== undefined) {
       var device_push_obj = JSON.parse(JSON.stringify(req.body));
-      if (device_push_obj["deviceid"] !== undefined && device_push_obj["businessid"] !== undefined && device_push_obj["AQI"] !== undefined) {
+      if (device_push_obj["deviceid"] !== undefined && device_push_obj["AQI"] !== undefined) {
         results.meta.status = 200;
         results.meta.msg = "Processed successfully";
         results.result = {
           "deviceid": device_push_obj["deviceid"],
-          "businessid": device_push_obj["businessid"],
           "AQI": device_push_obj["AQI"]
         }
         if (device_push_obj["timestamp"] !== undefined) {
@@ -265,17 +302,15 @@ app.post('/1/device_push', (req, res) => {
             // no error
             // db.business.find({"businessid": "c8be9040-43ca-4e1e-a029-61bccf0fa546", "devices.deviceid": "c65d3c6d-4f05-4054-9929-c6aafe9996be"})
             // db.business.update({"businessid": "c8be9040-43ca-4e1e-a029-61bccf0fa546", "devices.deviceid": "c65d3c6d-4f05-4054-9929-c6aafe9996be"}, {"$set": {"devices.0.AQI": 69}})
-            console.log("Device logged. deviceid=" + device_push_obj["deviceid"] + " business id=" + device_push_obj["businessid"] + " AQI=" + device_push_obj["AQI"]);
+            console.log("Device logged. deviceid=" + device_push_obj["deviceid"] + " AQI=" + device_push_obj["AQI"]);
             var dbo = client.db(process.env.DBNAME); // Get DB object
             var myobj = {
-              "businessid": device_push_obj["businessid"],
               "deviceid": device_push_obj["deviceid"],
               "AQI": parseInt(device_push_obj["AQI"]),
               "timestamp": parseInt(new Date().getTime()),
               "createDate": new Date
             };
             var updatequery = {
-              "businessid": device_push_obj["businessid"],
               "devices.deviceid": device_push_obj["deviceid"]
             };
             var updatecmd = {
@@ -330,7 +365,7 @@ app.post('/1/device_push', (req, res) => {
         console.log("Invalid request type");
         console.log("Body: " + JSON.stringify(req.body));
         results.meta.status = 400;
-        results.meta.msg = "JSON block requires 'deviceid', 'businessid', and 'AQI' attributes, and header 'application/json' must be specified";
+        results.meta.msg = "JSON block requires 'deviceid', and 'AQI' attributes, and header 'application/json' must be specified";
         res.json(results);
       }
     } else {
