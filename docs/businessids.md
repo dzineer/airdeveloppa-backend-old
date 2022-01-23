@@ -46,8 +46,10 @@ curl "http://localhost:8000/1/device_push" \
 ## Businesses
 
 * `c8be9040-43ca-4e1e-a029-61bccf0fa546` (Lightning network Chiang Mai)
+* `1c78e24c-6ae1-4c87-9056-186e735dbd97` (Yellow coworking)
 
 ## Devices
 
 * `c65d3c6d-4f05-4054-9929-c6aafe9996be` (Device to use)
 * `fb450036-2acd-4a34-93cc-cdc90ca60b9b` (another device)
+* `28e50d1b-2cd5-435a-b2b8-5b24270dd97d` (another one different company)
