@@ -50,8 +50,9 @@ This endpoint also lets an existing device re-validate an authentication token.
 
 #### GET Parameters
 
-- `lat` (not required or implemented)
-- `lng` (not required or implemented)
+- `lat` (required. eg. 18.798444546939923)
+- `lat` (required. eg. 98.96888142026467)
+- `distance` (required. in meters)
 
 ### Balance
 
