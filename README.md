@@ -6,6 +6,14 @@
 * [Generating an admin key](#generating-an-admin-key)
 * [Endpoint Descriptions](#sample-endpoints)
 
+## Architecture
+
+The backend is a `nodejs` application packaged in a `docker` container self built by gitlab CI and pushed to the gitlab container registry.
+
+The `docker-compose` file in this repository also has the database engine within here for easy access.
+
+All thats required is `docker(1)` and `docker-compose(1)` (latest versions recommended) installed. You may follow the [guide](https://docs.docker.com/engine/install/ubuntu/) for steps how to do so.
+
 ## Running (Docker)
 
 ```
