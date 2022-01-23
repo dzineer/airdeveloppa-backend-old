@@ -244,31 +244,38 @@ app.get('/1/list', (req, res) => {
                 for (var j = 0; j < placeentry["devices"].length; j++) {
                   deviceentry = placeentry["devices"][j];
                   // Populate Array of places by device with business as a nested object
-                  places.push({
-                    "device_id": deviceentry["deviceid"],
-                    "device_location": deviceentry["devicelocation"],
-                    "device_label": deviceentry["devicelabel"],
-                    "device_bounty": deviceentry["devicebounty"],
-                    "business": {
-                      "business_id": placeentry["businessid"],
-                      "business_name": placeentry["businessname"],
-                      "coords": [placeentry["businesscoords"][1], placeentry["businesscoords"][0]],
-                      "address": placeentry["businessaddress"],
-                      "city": placeentry["businesscity"],
-                      "region": placeentry["businessregion"],
-                      "countrycode": placeentry["businesscountry"],
-                    },
-                    "aqi": {
-                      "now": {
-                        "value": deviceentry["AQI"],
-                        "lastUpdateTS": deviceentry["updateTS"]
-                      },
-                      "day": {
-                        "value": 0,
-                        "lastUpdateTS": 1
-                      }
+                  // if AQI is present
+                  if (deviceentry["AQI"]) {
+                    if (deviceentry["AQI"] !== undefined && deviceentry["AQI"] !== null) {
+                      // means its real
+                      // but we should also look for last updated too (this maybe done at query level)
+                      places.push({
+                        "device_id": deviceentry["deviceid"],
+                        "device_location": deviceentry["devicelocation"],
+                        "device_label": deviceentry["devicelabel"],
+                        "device_bounty": deviceentry["devicebounty"],
+                        "business": {
+                          "business_id": placeentry["businessid"],
+                          "business_name": placeentry["businessname"],
+                          "coords": [placeentry["businesscoords"][1], placeentry["businesscoords"][0]],
+                          "address": placeentry["businessaddress"],
+                          "city": placeentry["businesscity"],
+                          "region": placeentry["businessregion"],
+                          "countrycode": placeentry["businesscountry"],
+                        },
+                        "aqi": {
+                          "now": {
+                            "value": deviceentry["AQI"],
+                            "lastUpdateTS": deviceentry["updateTS"]
+                          },
+                          "day": {
+                            "value": 0,
+                            "lastUpdateTS": 1
+                          }
+                        }
+                      }); // Add to places object
                     }
-                  }); // Add to places object
+                  } // end: check for actual AQI being reported
                 } // end: iterate through devices
               } // end iterate through businesses
               results.meta.status = 200;
