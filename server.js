@@ -60,12 +60,14 @@ app.get('/', (req, res) => {
           results.meta.msg = "Success";
           results.result['inserted_identifier'] = dbres.insertedId;
           client.close(); // close connection
+          res.status(results.meta.status);
           res.send(JSON.stringify(results));
         } else {
           // errors
           results.meta.status = 500;
           results.meta.msg = "Error inserting to database";
           client.close(); // close connection
+          res.status(results.meta.status);
           res.send(JSON.stringify(results));
         }
       });
@@ -77,6 +79,7 @@ app.get('/', (req, res) => {
         "error": err
       };
       console.log(JSON.stringify(err));
+      res.status(results.meta.status);
       res.send(JSON.stringify(results));
     }
   })
@@ -88,6 +91,7 @@ app.post('/', (req, res) => {
   results.meta.debug = {
     "body": req.body
   };
+  res.status(results.meta.status);
   res.send(JSON.stringify(results));
 });
 
@@ -95,6 +99,7 @@ app.post('/', (req, res) => {
 // register
 app.get('/1/register', (req, res) => {
   results.meta.msg = "GET method is not supported";
+  res.status(results.meta.status);
   res.send(JSON.stringify(results));
 });
 app.post('/1/register', (req, res) => {
@@ -106,9 +111,11 @@ app.post('/1/register', (req, res) => {
       registered: true,
       token: crypto.createHash('sha256').update(crypto.createHash('sha256').update(req.body["device_id"] + "||" + (new Date().getTime()).toString()).digest('hex')).digest('hex')
     };
+    res.status(results.meta.status);
     res.send(JSON.stringify(results));
   } else {
     results.meta.msg = "required 'device_id' (and 'token' if a device exists)";
+    res.status(results.meta.status);
     res.send(JSON.stringify(results));
   }
 });
@@ -117,6 +124,7 @@ app.post('/1/register', (req, res) => {
 app.get('/1/verify', (req, res) => {
   results.meta.status = 400;
   results.meta.msg = "Bad request";
+  res.status(results.meta.status);
   res.send(JSON.stringify(results));
 });
 app.post('/1/verify', (req, res) => {
@@ -134,6 +142,7 @@ app.post('/1/verify', (req, res) => {
       results.result = {
         verified: verify_status
       };
+      res.status(results.meta.status);
       res.send(JSON.stringify(results));
     } else {
       results.meta.status = 200;
@@ -143,11 +152,13 @@ app.post('/1/verify', (req, res) => {
       results.result = {
         verified: verify_status
       };
+      res.status(results.meta.status);
       res.send(JSON.stringify(results));
     }
   } else {
     results.meta.status = 400;
     results.meta.msg = "missing 'id' and 'token' parameter";
+    res.status(results.meta.status);
     res.send(JSON.stringify(results));
   } // end check for ID
 });
@@ -160,10 +171,12 @@ app.get('/1/balance', (req, res) => {
     };
     results.meta.status = 200;
     results.meta.msg = "Request processed successfully";
+    res.status(results.meta.status);
     res.send(JSON.stringify(results));
   } else {
     results.meta.status = 400;
     results.meta.msg = "Required parameters 'token'";
+    res.status(results.meta.status);
     res.send(JSON.stringify(results));
   }
 });
@@ -315,17 +328,20 @@ app.get('/1/deviceinfo/:id', (req, res) => {
         dbo.collection("business").find(device_query_obj, {projection: device_query_filter}).toArray((devinfoErr, devinfoRes) => {
           if (!devinfoErr) {
             results.result = devinfoRes;
+            res.status(results.meta.status);
             res.send(JSON.stringify(results));
           } else {
             console.log("query error: " + devinfoErr);
             results.meta.status = 500;
             results.meta.msg = "Database query error";
+            res.status(results.meta.status);
             res.send(JSON.stringify(results));
           }
         });
       } else {
         results.meta.status = 500;
         results.meta.msg = "Database connection error";
+        res.status(results.meta.status);
         res.send(JSON.stringify(results));
       }
     });
@@ -335,6 +351,7 @@ app.get('/1/device_push', (req, res) => {
   results.meta.status = 400;
   results.meta.msg = "Must send a POST request";
   console.log("Invalid 'device_push' request. User sent a GET rather than post");
+  res.status(results.meta.status);
   res.send(JSON.stringify(results));
 });
 
@@ -408,12 +425,14 @@ app.post('/1/device_push', (req, res) => {
                 results.meta.msg = "Insert error";
                 client.close()
               }
+              res.status(results.meta.status);
               res.json(results);
             });
           } else {
             // err connecting
             results.meta.status = 500;
             results.meta.msg = "Error connecting to database";
+            res.status(results.meta.status);
             res.json(results);
           }
         });
@@ -422,11 +441,13 @@ app.post('/1/device_push', (req, res) => {
         console.log("Body: " + JSON.stringify(req.body));
         results.meta.status = 400;
         results.meta.msg = "JSON block requires 'deviceid', and 'AQI' attributes, and header 'application/json' must be specified";
+        res.status(results.meta.status);
         res.json(results);
       }
     } else {
       results.meta.status = 400;
       results.meta.msg = "Invalid JSON";
+      res.status(results.meta.status);
       res.send(results);
     }
   } catch (e) {
@@ -434,6 +455,7 @@ app.post('/1/device_push', (req, res) => {
     console.log(e);
     results.meta.status = 500;
     results.meta.msg = "Invalid request";
+    res.status(results.meta.status);
     res.send(JSON.stringify(results))
   }
 });
@@ -444,7 +466,8 @@ app.post('/1/device_push', (req, res) => {
 app.get('/1/deviceregister', (req, res) => {
   results.meta.status = 400;
   results.meta.msg = "This endpoint only accepts POST requests";
-  res.send(JSON.stringify(results))
+  res.status(results.meta.status);
+  res.send(JSON.stringify(results));
 });
 app.post('/1/deviceregister', (req, res) => {
   if (req.body !== undefined) {
@@ -514,6 +537,7 @@ app.post('/1/deviceregister', (req, res) => {
                     "error": updateerrr
                   };
                   client.close(); // close connection
+                  res.status(results.meta.status);
                   res.send(JSON.stringify(results))
                 }
               });
@@ -521,27 +545,32 @@ app.post('/1/deviceregister', (req, res) => {
               results.meta.status = 500;
               results.meta.msg = "Database connect error";
               client.close(); // close connection
+              res.status(results.meta.status);
               res.send(JSON.stringify(results))
             }
           });
         } else {
           results.meta.status = 400;
           results.meta.msg = "Requires a 'businessid' to register the device to  (optional: 'devicelocation', 'devicelabel')";
-          res.send(JSON.stringify(results))
+          res.status(results.meta.status);
+          res.send(JSON.stringify(results));
         }
       } else {
         results.meta.status = 401;
         results.meta.msg = "Authentication failed";
-        res.send(JSON.stringify(results))
+        res.status(results.meta.status);
+        res.send(JSON.stringify(results));
       }
     } else {
       results.meta.status = 400;
       results.meta.msg = "Invalid request. Require admin 'token', 'businessid' (optional: 'devicelocation', 'devicelabel')";
-      res.send(JSON.stringify(results))
+      res.status(results.meta.status);
+      res.send(JSON.stringify(results));
     }
   } else {
     results.meta.status = 400;
     results.meta.msg = "Invalid request. Require admin 'token', 'businessid'  (optional: 'devicelocation', 'devicelabel')";
+    res.status(results.meta.status);
     res.send(JSON.stringify(results))
   }
 });
@@ -550,7 +579,8 @@ app.post('/1/deviceregister', (req, res) => {
 app.get('/1/business', (req, res) => {
   results.meta.status = 400;
   results.meta.msg = "This endpoint only accepts POST requests";
-  res.send(JSON.stringify(results))
+  res.status(results.meta.status);
+  res.send(JSON.stringify(results));
 });
 app.post('/1/business', (req, res) => {
     if (req.body !== undefined) {
@@ -594,12 +624,14 @@ app.post('/1/business', (req, res) => {
                     results.meta.msg = "Insert error";
                     client.close();
                   }
+                  res.status(results.meta.status);
                   res.json(results);
                 });
               } else {
                 results.meta.status = 500;
                 results.meta.msg = "Unable to connect to database";
                 client.close(); // close connection
+                res.status(results.meta.status);
                 res.send(JSON.stringify(results))
               }
             });
@@ -607,22 +639,26 @@ app.post('/1/business', (req, res) => {
             // Parameters not defined
             results.meta.status = 400;
             results.meta.msg = "Require 'businessname', 'businessaddress', 'businesscity', 'businessregion', 'businesscountry', 'lat', 'lng' parameters";
+            res.status(results.meta.status);
             res.send(JSON.stringify(results));
           }
         } else {
           // auth failed
           results.meta.status = 401;
           results.meta.msg = "Authentication failed";
+          res.status(results.meta.status);
           res.send(JSON.stringify(results));
         }
       } else {
         results.meta.status = 401;
         results.meta.msg = "Requires authentication";
+        res.status(results.meta.status);
         res.send(JSON.stringify(results));
       }
     } else {
       results.meta.status = 400;
       results.meta.msg = "Invalid request. Require 'token' and business creation details";
+      res.status(results.meta.status);
       res.send(JSON.stringify(results))
     }
 });
@@ -656,6 +692,7 @@ app.post('/1/validatedevice', (req, res) => {
                 };
               }
               client.close(); // close connection
+              res.status(results.meta.status);
               res.send(JSON.stringify(results))
             } else {
               console.log(vdErr);
@@ -666,6 +703,7 @@ app.post('/1/validatedevice', (req, res) => {
                 query: validatequery
               }
               client.close(); // close connection
+              res.status(results.meta.status);
               res.send(JSON.stringify(results))
             }
           })
@@ -673,6 +711,7 @@ app.post('/1/validatedevice', (req, res) => {
           results.meta.status = 500;
           results.meta.msg = "Error connecting to database";
           client.close(); // close connection
+          res.status(results.meta.status);
           res.send(JSON.stringify(results))
         }
       });
@@ -680,13 +719,15 @@ app.post('/1/validatedevice', (req, res) => {
       client.close(); // close connection
       results.meta.status = 400;
       results.meta.msg = "Invalid request. Requires 'businessid' and 'deviceid'";
-      res.send(JSON.stringify(results))
+      res.status(results.meta.status);
+      res.send(JSON.stringify(results));
     }
   } else {
     client.close(); // close connection
     results.meta.status = 400;
     results.meta.msg = "Invalid request. Requires 'businessid' and 'deviceid'";
-    res.send(JSON.stringify(results))
+    res.status(results.meta.status);
+    res.send(JSON.stringify(results));
   }
 });
 // End API (express)
