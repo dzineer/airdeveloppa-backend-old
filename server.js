@@ -31,6 +31,9 @@ var results = {
   "meta": {"status": 400, "msg": "Not implemented"}
 };
 app.use(function (req, res, next) {
+  // send header for CORS
+  res.header("Access-Control-Allow-Origin", "*");
+  
   // reset results
   results.meta.status = 400;
   results.meta.msg = "Bad request";
