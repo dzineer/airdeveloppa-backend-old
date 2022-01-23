@@ -261,11 +261,13 @@ app.get('/1/list', (req, res) => {
               results.meta.status = 200;
               results.meta.msg = "Processed successfully";
               results.result = places;
+              res.status(results.meta.status);
               res.send(JSON.stringify(results));
             } else {
               results.meta.status = 500;
               results.meta.msg = "Database query error";
               results.result = findErr;
+              res.status(results.meta.status);
               res.send(JSON.stringify(results));
             }
           });
@@ -273,17 +275,20 @@ app.get('/1/list', (req, res) => {
           results.meta.status = 500;
           results.meta.msg = "Database query error";
           results.result = err;
+          res.status(results.meta.status);
           res.send(JSON.stringify(results));
         }
       });
     } else {
       results.meta.status = 400;
       results.meta.msg = "Require 'lat' and 'lng' and 'distance' parameter";
+      res.status(results.meta.status);
       res.send(JSON.stringify(results));
     }
   } else {
     results.meta.status = 400;
     results.meta.msg = "Require 'lat' and 'lng' and 'distance'  parameter";
+    res.status(results.meta.status);
     res.send(JSON.stringify(results));
   }
 });
