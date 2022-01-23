@@ -193,46 +193,97 @@ app.post('/1/withdraw', (req, res) => {
 // list endpoint
 app.get('/1/list', (req, res) => {
   results.meta.status = 400;
-  results.meta.msg = "";
-  console.log(req.query.length);
+  results.meta.msg = "Invalid";
   if (req.query !== undefined) {
-    if (req.query["lat"] !== undefined && req.query["lng"] !== undefined) {
-      // stubbed places
-      var places = [
-        {
-            device_id: uuidv4(),
-            device_location: "cafe",
-            place: {
-                name: "Yellow Coworking Space",
-                coords: [18.79829143251964, 98.96882473444388],
-                address: "16 2 Nimmanahaeminda Road, Su Thep, Mueang Chiang Mai, Chiang Mai 50200",
-                meta: {
-                    "bounty": 5000,
-                    "bounty_total": 100000,
-                    "purifiers": 8,
-                    "floors": 2,
-                    "rating": 1,
+    if (req.query["lat"] !== undefined && req.query["lng"] !== undefined && req.query["distance"] !== undefined) {
+      MongoClient.connect(dburi, (err, client) => {
+        if (!err) {
+          var dbo = client.db(process.env.DBNAME); // Get DB object
+          // Geoquery and also filter out devices that are disabled
+          // Maybe look at devices.updateTS too
+          // and use new Date().getTime() to get out stale entry
+          var list_places_query = {
+            "businesscoords": { "$near":
+                { "$geometry":
+                  {
+                    "coordinates": [parseFloat(req.query["lng"]), parseFloat(req.query["lat"])],
+                    "type": "Point"
+                  },
+                  "$maxDistance": parseInt(req.query["distance"])
                 }
-            },
-            aqi: {
-                now: 9,
-                week: 13,
-                month: 10
-            },
+              },
+            "devices.devicestatus": {
+              "$ne": "disabled"
+            }
+          };
+          var list_places_filter = {
+            "_id": 0,
+            "devices": 1
+          }
+          dbo.collection("business").find(list_places_query, list_places_filter).toArray((findErr, findResult) => {
+            if (!findErr) {
+              // stubbed places
+              var places = [];
+              var placeentry = {};
+              var deviceentry = {};
+              for (var i = 0; i < findResult.length; i++) {
+                placeentry = findResult[i];
+                for (var j = 0; j < placeentry["devices"].length; j++) {
+                  deviceentry = placeentry["devices"][j];
+                  // Populate Array of places by device with business as a nested object
+                  places.push({
+                    "device_id": deviceentry["deviceid"],
+                    "device_location": deviceentry["devicelocation"],
+                    "device_label": deviceentry["devicelabel"],
+                    "device_bounty": deviceentry["devicebounty"],
+                    "business": {
+                      "business_id": placeentry["businessid"],
+                      "business_name": placeentry["businessname"],
+                      "coords": [placeentry["businesscoords"][1], placeentry["businesscoords"][0]],
+                      "address": placeentry["businessaddress"],
+                      "city": placeentry["businesscity"],
+                      "region": placeentry["businessregion"],
+                      "countrycode": placeentry["businesscountry"],
+                    },
+                    "aqi": {
+                      "now": {
+                        "value": deviceentry["AQI"],
+                        "lastUpdateTS": deviceentry["updateTS"]
+                      },
+                      "day": {
+                        "value": 0,
+                        "lastUpdateTS": 1
+                      }
+                    }
+                  }); // Add to places object
+                } // end: iterate through devices
+              } // end iterate through businesses
+              results.meta.status = 200;
+              results.meta.msg = "Processed successfully";
+              results.result = places;
+              res.send(JSON.stringify(results));
+            } else {
+              results.meta.status = 500;
+              results.meta.msg = "Database query error";
+              results.result = findErr;
+              res.send(JSON.stringify(results));
+            }
+          });
+        } else {
+          results.meta.status = 500;
+          results.meta.msg = "Database query error";
+          results.result = err;
+          res.send(JSON.stringify(results));
         }
-      ];
-      results.meta.status = 200;
-      results.meta.msg = "Processed successfully";
-      results.result = places;
-      res.send(JSON.stringify(results));
+      });
     } else {
       results.meta.status = 400;
-      results.meta.msg = "Require 'lat' and 'lng' parameter";
+      results.meta.msg = "Require 'lat' and 'lng' and 'distance' parameter";
       res.send(JSON.stringify(results));
     }
   } else {
     results.meta.status = 400;
-    results.meta.msg = "Require 'lat' and 'lng' parameter";
+    results.meta.msg = "Require 'lat' and 'lng' and 'distance'  parameter";
     res.send(JSON.stringify(results));
   }
 });
