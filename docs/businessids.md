@@ -8,6 +8,7 @@ The rule is that all devices must match the business id.
 * `70c59c79-66f9-4c1f-938d-91c5dc2fd208` (Corner Bistro & Burrito Squad)
 * `262015a5-6de5-4b4c-b9e8-33913d325ac7` (Aaron's "business")
 * `5098c082-87fb-4d92-9591-ab30f4b4bc59` (Hub53)
+* `ffd6894f-1960-40e0-95d2-8d6dcd80a140` (Alt coworking)
 
 ## Devices
 
