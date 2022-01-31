@@ -14,10 +14,10 @@ db.business.find({"devices.deviceid": "fb450036-2acd-4a34-93cc-cdc90ca60b9b"}, {
 db.business.find({"businesscoords": { "$near": { "$geometry": {"coordinates": [98.98236957936153, 18.80430033821177], "type": "Point"}, "$maxDistance": 100} }
 ```
 
-## Pull device from a business 
+## Pull and push a device from a business 
 
 ```
-# Make sure you grab the information through db.business.find() first
+# Make sure you grab the information through db.business.find() first and save it (main info is the deviceid, we can probably just reset the label, location, bounty to defaults I think)
 db.business.find({ "devices": {$elemMatch: {"deviceid": "2c57c8bb-2a97-4e4c-bfee-8d0eae282fc1"}}})
 
 # example pull device id 2c57c8bb-2a97-4e4c-bfee-8d0eae282fc1 from businessid 5098c082-87fb-4d92-9591-ab30f4b4bc59
