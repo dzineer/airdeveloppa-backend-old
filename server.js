@@ -33,7 +33,7 @@ var results = {
 app.use(function (req, res, next) {
   // send header for CORS
   res.header("Access-Control-Allow-Origin", "*");
-  
+
   // reset results
   results.meta.status = 400;
   results.meta.msg = "Bad request";
@@ -218,6 +218,8 @@ app.get('/1/list', (req, res) => {
           // Geoquery and also filter out devices that are disabled
           // Maybe look at devices.updateTS too
           // and use new Date().getTime() to get out stale entry
+          // use parseFloat(new Date().getTime()) - (86400*1000)
+          // to only show places which are updated within 24 hours
           var list_places_query = {
             "businesscoords": { "$near":
                 { "$geometry":
@@ -226,6 +228,11 @@ app.get('/1/list', (req, res) => {
                     "type": "Point"
                   },
                   "$maxDistance": parseInt(req.query["distance"])
+                },
+                {
+                  "devices.updateTS": {
+                    "$gt": parseFloat(new Date().getTime()) - (86400*1000)
+                  }
                 }
               },
             "devices.devicestatus": {
