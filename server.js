@@ -731,11 +731,35 @@ app.post('/1/setdeviceattr', (req, res) => {
             if (req.body['devicestatus'] !== undefined) {
               updatecmd['$set']['devices.$.devicestatus'] = req.body['devicestatus'];
             }
-            console.log(updatecmd);
-            results.meta.status = 400;
-            results.meta.msg = "Not fully implemented";
-            res.status(results.meta.status);
-            res.send(JSON.stringify(results));
+            // begin query
+            MongoClient.connect(dburi, (err, client) => {
+              if (!err) {
+                console.log(updatecmd);
+                var dbo = client.db(process.env.DBNAME);
+                dbo.collection("business").updateOne(updateQuery, updatecmd, (updaterr, updateres) => {
+                  if (!updaterr) {
+                    // no error
+                    console.log("Device record in business collection updated (" + JSON.stringify(updateres) + ")");
+                    results.meta.status = 200;
+                    results.meta.msg = "Successfully processed";
+                    res.status(results.meta.status);
+                    res.send(JSON.stringify(results));
+                  } else {
+                    // error
+                    console.log("Error updating business collection (" + JSON.stringify(updaterr) + ")");
+                    results.meta.status = 500;
+                    results.meta.msg = "database error";
+                    res.status(results.meta.status);
+                    res.send(JSON.stringify(results));
+                  }
+                });
+              } else {
+                results.meta.status = 500;
+                results.meta.msg = "database error";
+                res.status(results.meta.status);
+                res.send(JSON.stringify(results));
+              }
+            });
           } else {
             // Send error message
             res.status(results.meta.status);
