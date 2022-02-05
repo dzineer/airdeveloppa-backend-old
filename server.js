@@ -220,6 +220,7 @@ app.get('/1/list', (req, res) => {
           // and use new Date().getTime() to get out stale entry
           // use parseFloat(new Date().getTime()) - (86400*1000)
           // to only show places which are updated within 24 hours
+          // Also devicestatus should not be "disabled"
           var list_places_query = {
             "businesscoords": { "$near":
                 { "$geometry":
