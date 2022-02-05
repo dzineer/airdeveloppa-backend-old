@@ -679,6 +679,52 @@ app.post('/1/business', (req, res) => {
     }
 });
 
+// Admin token only
+// Device create endpoint
+app.get('/1/setdeviceattr', (req, res) => {
+  results.meta.status = 400;
+  results.meta.msg = "This endpoint only accepts POST requests";
+  res.status(results.meta.status);
+  res.send(JSON.stringify(results));
+});
+app.post('/1/setdeviceattr', (req, res) => {
+  if (req.body !== undefined) {
+    if (req.body['token'] !== undefined) {
+      if (req.body['token'] === process.env.ADMINKEY) {
+        // Admin token matches
+        if (req.body['deviceid'] !== undefined) {
+          // need a device id at least
+          results.meta.status = 400;
+          results.meta.msg = "Not implemented";
+          res.status(results.meta.status);
+          res.send(JSON.stringify(results));
+        } else {
+          // Require 'deviceid' (optional: 'devicelabel', 'devicelocation', 'devicebounty', 'devicestatus')
+          results.meta.status = 400;
+          results.meta.msg = "Require 'deviceid' (optional: 'devicelabel', 'devicelocation', 'devicebounty', 'devicestatus')";
+          res.status(results.meta.status);
+          res.send(JSON.stringify(results));
+        }
+      } else {
+        results.meta.status = 401;
+        results.meta.msg = "admin 'token' does not match";
+        res.status(results.meta.status);
+        res.send(JSON.stringify(results));
+      }
+    } else {
+      results.meta.status = 401;
+      results.meta.msg = "Require admin 'token'";
+      res.status(results.meta.status);
+      res.send(JSON.stringify(results));
+    }
+  } else {
+    results.meta.status = 400;
+    results.meta.msg = "Missing parameters";
+    res.status(results.meta.status);
+    res.send(JSON.stringify(results));
+  }
+});
+
 app.post('/1/validatedevice', (req, res) => {
   // db.business.find({"businessid": "70c59c79-66f9-4c1f-938d-91c5dc2fd208", "devices.deviceid": "b27fb2a5-89ce-4613-9239-356f0fe7ddf3"}).count()
   if (req.body !== undefined) {
