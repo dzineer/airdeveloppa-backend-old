@@ -1,6 +1,6 @@
 ADMINKEY=testtest
 WEBPORT=8000
-BACKENDIMAGE=registry.gitlab.com/nolim1t/airdeveloppa-backend:v0.1.24
+BACKENDIMAGE=registry.gitlab.com/nolim1t/airdeveloppa-backend:v0.1.25
 DATABASEIMAGE=mongo:5.0.5-focal
 DBADMINUSER=root
 DBADMINPASS=password
