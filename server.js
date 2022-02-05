@@ -694,10 +694,53 @@ app.post('/1/setdeviceattr', (req, res) => {
         // Admin token matches
         if (req.body['deviceid'] !== undefined) {
           // need a device id at least
-          results.meta.status = 400;
-          results.meta.msg = "Not implemented";
-          res.status(results.meta.status);
-          res.send(JSON.stringify(results));
+          var updateQuery = {
+            "devices.deviceid": req.body['deviceid']
+          };
+          // Empty template
+          var updatecmd = {
+            "$set": {
+            }
+          };
+          results.meta.status = 200; // Before validation
+          // validate devicestatus
+          if (req.body['devicestatus'] !== undefined) {
+            if (req.body['devicestatus'] !== "enabled" && req.body['devicestatus'] !== "disabled") {
+              results.meta.status = 400;
+              results.meta.msg = "Device status must be either 'enabled' or 'disabled'";
+            } else {
+              results.meta.status = 200;
+              results.meta.msg = "Successfully processed";
+            }
+          };
+          if (results.meta.status === 200) {
+            // Validation all good then proceed
+            // devicelabel
+            if (req.body['devicelabel'] !== undefined) {
+              updatecmd['$set']['devices.$.devicelabel'] = req.body['devicelabel'];
+            }
+            // devicelocation
+            if (req.body['devicelocation'] !== undefined) {
+              updatecmd['$set']['devices.$.devicelocation'] = req.body['devicelocation'];
+            }
+            // devicebounty
+            if (req.body['devicebounty'] !== undefined) {
+              updatecmd['$set']['devices.$.devicebounty'] = parseInt(req.body['devicebounty']);
+            }
+            // devicestatus ('disabled' or 'enabled')
+            if (req.body['devicestatus'] !== undefined) {
+              updatecmd['$set']['devices.$.devicestatus'] = req.body['devicestatus'];
+            }
+            console.log(updatecmd);
+            results.meta.status = 400;
+            results.meta.msg = "Not fully implemented";
+            res.status(results.meta.status);
+            res.send(JSON.stringify(results));
+          } else {
+            // Send error message
+            res.status(results.meta.status);
+            res.send(JSON.stringify(results));
+          }
         } else {
           // Require 'deviceid' (optional: 'devicelabel', 'devicelocation', 'devicebounty', 'devicestatus')
           results.meta.status = 400;
