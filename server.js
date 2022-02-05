@@ -248,6 +248,7 @@ app.get('/1/list', (req, res) => {
               var places = [];
               var placeentry = {};
               var deviceentry = {};
+              var placerectopush = {};
               for (var i = 0; i < findResult.length; i++) {
                 placeentry = findResult[i];
                 for (var j = 0; j < placeentry["devices"].length; j++) {
@@ -258,7 +259,7 @@ app.get('/1/list', (req, res) => {
                     if (deviceentry["AQI"] !== undefined && deviceentry["AQI"] !== null) {
                       // means its real
                       // but we should also look for last updated too (this maybe done at query level)
-                      places.push({
+                      placerectopush = {
                         "device_id": deviceentry["deviceid"],
                         "device_location": deviceentry["devicelocation"],
                         "device_label": deviceentry["devicelabel"],
@@ -271,6 +272,10 @@ app.get('/1/list', (req, res) => {
                           "city": placeentry["businesscity"],
                           "region": placeentry["businessregion"],
                           "countrycode": placeentry["businesscountry"],
+                          "purifiers": 0,
+                          "category": "other",
+                          "sociallinks": [],
+                          "verifications": 0
                         },
                         "aqi": {
                           "now": {
@@ -282,7 +287,12 @@ app.get('/1/list', (req, res) => {
                             "lastUpdateTS": 1
                           }
                         }
-                      }); // Add to places object
+                      };
+                      // sociallinks
+                      // type = 'facebook', 'twitter', 'google' as types.
+                      // url = string
+                      // category = 'cafe', 'restaurant', 'coworking', 'fitness', 'other'
+                      places.push(placerectopush); // Add to places object
                     }
                   } // end: check for actual AQI being reported
                 } // end: iterate through devices
