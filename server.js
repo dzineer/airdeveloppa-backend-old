@@ -228,16 +228,14 @@ app.get('/1/list', (req, res) => {
                     "type": "Point"
                   },
                   "$maxDistance": parseInt(req.query["distance"])
-                },
-                {
-                  "devices.updateTS": {
-                    "$gt": parseFloat(new Date().getTime()) - (86400*1000)
-                  }
                 }
               },
-            "devices.devicestatus": {
-              "$ne": "disabled"
-            }
+              "devices.devicestatus": {
+                "$ne": "disabled"
+              },
+              "devices.updateTS": {
+                "$gt": parseFloat(new Date().getTime()) - (86400*1000)
+              }
           };
           var list_places_filter = {
             "_id": 0,
