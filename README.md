@@ -157,7 +157,7 @@ curl "https://backend.airdeveloppa.services/1/deviceregister" \
 -d '{"token": "", "businessid": "70c59c79-66f9-4c1f-938d-91c5dc2fd208", "devicelocation": "Upstairs", "devicelabel": "Corner Bistro test"}'
 ```
 
-#### Device register
+#### Set Device attributes
 
 **Endpoint:** POST https://backend.airdeveloppa.services/1/setdeviceattr
 
