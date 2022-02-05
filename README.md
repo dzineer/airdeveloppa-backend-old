@@ -157,6 +157,24 @@ curl "https://backend.airdeveloppa.services/1/deviceregister" \
 -d '{"token": "", "businessid": "70c59c79-66f9-4c1f-938d-91c5dc2fd208", "devicelocation": "Upstairs", "devicelabel": "Corner Bistro test"}'
 ```
 
+#### Device register
+
+**Endpoint:** POST https://backend.airdeveloppa.services/1/setdeviceattr
+
+##### parameters
+
+- `token` - Admin authentication (for now)
+- `deviceid` - Required field. Specify the device to modify
+- `devicelabel` - Optional devicelabel
+- `devicelocation` - Optional devicelocation
+- `devicebounty` - Optional devicebounty
+- `devicestatus` -  - Optional devicestatus
+
+```bash
+curl "https://backend.airdeveloppa.services/1/setdeviceattr" \
+-H "Content-type: application/json" \
+-d '{"token": "", "deviceid": "fb450036-2acd-4a34-93cc-cdc90ca60b9b", "devicelabel": "new label"}'
+```
 #### Generating admin key
 
 ## Generating an admin key
