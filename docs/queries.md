@@ -9,12 +9,14 @@ db.business.find({"devices.deviceid": "fb450036-2acd-4a34-93cc-cdc90ca60b9b"}, {
 ## Find a list of businesses within 100 meters
 
 - Point being at `18.80430033821177,98.98236957936153`
+- milliseconds in a day is 86400000
+
 
 ```
-db.business.find({"businesscoords": { "$near": { "$geometry": {"coordinates": [98.98236957936153, 18.80430033821177], "type": "Point"}, "$maxDistance": 100} }
+db.business.find({"businesscoords": { "$near": { "$geometry": {"coordinates": [98.98236957936153, 18.80430033821177], "type": "Point"}, "$maxDistance": 10000} }, "devices.updateTS": {"$gt": 1643960363899}, "devices.devicestatus": {"$ne": "disabled}})
 ```
 
-## Pull and push a device from a business 
+## Pull and push a device from a business
 
 ```
 # Make sure you grab the information through db.business.find() first and save it (main info is the deviceid, we can probably just reset the label, location, bounty to defaults I think)
