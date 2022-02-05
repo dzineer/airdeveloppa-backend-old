@@ -34,3 +34,11 @@ db.business.update({"businessid": "ffd6894f-1960-40e0-95d2-8d6dcd80a140"}, {"$pu
 db.business.find({"businessid": "ffd6894f-1960-40e0-95d2-8d6dcd80a140"})
 
 ```
+
+## Set device attributes
+
+### Enabling/Disabling a device
+
+```
+ db.business.update({"devices.deviceid": "fb450036-2acd-4a34-93cc-cdc90ca60b9b"}, {"$set": {"devices.$.devicestatus": "disabled"}});
+```
