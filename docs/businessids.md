@@ -15,7 +15,7 @@ The rule is that all devices must match the business id.
 * `b27fb2a5-89ce-4613-9239-356f0fe7ddf3` (Corner bistro device)
 * `ce50ec48-c346-4d85-9e1b-aade0efed781` (Yellow coworking)
 * `2db34fdd-318c-416c-b4b0-b2a91bd930ee` (Aarons device)
-* `2c57c8bb-2a97-4e4c-bfee-8d0eae282fc1` (Robertos office)
+* `2c57c8bb-2a97-4e4c-bfee-8d0eae282fc1` (Alt coworking)
 
 
 # Development Identifiers
