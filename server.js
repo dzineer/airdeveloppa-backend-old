@@ -274,7 +274,7 @@ app.get('/1/list', (req, res) => {
                           "countrycode": placeentry["businesscountry"],
                           "purifiers": 0,
                           "category": "other",
-                          "sociallinks": [],
+                          "links": [],
                           "verifications": 0
                         },
                         "aqi": {
