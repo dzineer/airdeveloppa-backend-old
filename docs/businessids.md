@@ -4,6 +4,8 @@ The rule is that all devices must match the business id.
 
 ## Businesses
 
+The master link is available [here](https://docs.google.com/spreadsheets/d/1K3rkd6vq1zQOgQa1IyvrI8-NfmSonfqC3nlp7Z8CpIE/edit#gid=0)
+
 * `b45ac5dc-4832-4779-9410-34bed7c321c2` (Yellow coworking)
 * `70c59c79-66f9-4c1f-938d-91c5dc2fd208` (Corner Bistro & Burrito Squad)
 * `262015a5-6de5-4b4c-b9e8-33913d325ac7` (Aaron's "business")
