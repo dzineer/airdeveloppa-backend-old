@@ -249,16 +249,30 @@ app.get('/1/list', (req, res) => {
               var placeentry = {};
               var deviceentry = {};
               var placerectopush = {};
+              // init defaults
+              var getcategories = ["other"]; // default
+              var getlinks = []; // default
+              var purifiers_count = 0; // default
+              var verification_count = 0; // default
+              var can_verify = false; // defaults
               for (var i = 0; i < findResult.length; i++) {
                 placeentry = findResult[i];
                 for (var j = 0; j < placeentry["devices"].length; j++) {
                   deviceentry = placeentry["devices"][j];
+                  // Reset defaults per iteration
+                  getcategories = ["other"]; // default
+                  getlinks = []; // default
+                  purifiers_count = 0; // default
+                  verification_count = 0; // default
+                  can_verify = false; // defaults
+
                   // Populate Array of places by device with business as a nested object
                   // if AQI is present
                   if (deviceentry["AQI"]) {
                     if (deviceentry["AQI"] !== undefined && deviceentry["AQI"] !== null) {
                       // means its real
                       // but we should also look for last updated too (this maybe done at query level)
+
                       placerectopush = {
                         "device_id": deviceentry["deviceid"],
                         "device_location": deviceentry["devicelocation"],
@@ -272,15 +286,20 @@ app.get('/1/list', (req, res) => {
                           "city": placeentry["businesscity"],
                           "region": placeentry["businessregion"],
                           "countrycode": placeentry["businesscountry"],
-                          "purifiers": 0,
-                          "category": "other",
-                          "links": [],
-                          "verifications": 0
+                          "purifiers": purifiers_count,
+                          "categories": getcategories,
+                          "links": getlinks,
+                          "verifications": verification_count,
+                          "can_verify": can_verify
                         },
                         "aqi": {
                           "now": {
                             "value": deviceentry["AQI"],
                             "lastUpdateTS": deviceentry["updateTS"]
+                          },
+                          "hour": {
+                            "value": 0,
+                            "lastUpdateTS": 1
                           },
                           "day": {
                             "value": 0,
