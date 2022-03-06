@@ -251,6 +251,7 @@ app.get('/1/list', (req, res) => {
               var placerectopush = {};
               // init defaults
               var getcategories = ["other"]; // default
+              var category = "other"; // default
               var getlinks = []; // default
               var purifiers_count = 0; // default
               var verification_count = 0; // default
@@ -260,11 +261,33 @@ app.get('/1/list', (req, res) => {
                 for (var j = 0; j < placeentry["devices"].length; j++) {
                   deviceentry = placeentry["devices"][j];
                   // Reset defaults per iteration
-                  getcategories = ["other"]; // default
-                  getlinks = []; // default
-                  purifiers_count = 0; // default
-                  verification_count = 0; // default
-                  can_verify = false; // defaults
+
+                  // Categories
+                  if (placeentry["categories"] !== undefined) { // if there are categories show it
+                    getcategories = placeentry["categories"]
+                  } else { // if no categories defined default to other
+                    getcategories = ["other"]; // default
+                  }
+                  if (placeentry["links"] !== undefined) {
+                    getlinks = placeentry["links"]
+                  } else {
+                      getlinks = []; // default
+                  }
+                  if (placeentry["purifiers"] !== undefined) {
+                    purifiers_count = placeentry["purifiers"];
+                  } else {
+                    purifiers_count = 0; // default
+                  }
+                  if (placeentry["verifications"] !== undefined) {
+                    verification_count = placeentry["verifications"];
+                  } else {
+                    verification_count = 0; // default
+                  }
+                  if (placeentry["can_verify"] !== undefined) {
+                    can_verify = placeentry["can_verify"];
+                  } else {
+                    can_verify = false; // defaults
+                  }
 
                   // Populate Array of places by device with business as a nested object
                   // if AQI is present
