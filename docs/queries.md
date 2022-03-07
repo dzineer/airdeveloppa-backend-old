@@ -58,14 +58,14 @@ db.business.update({"businessid": ""}, {"$set": {"purifiers": 1}})
 db.business.update({"businessid": ""}, {"$set": {"links": ["",""]}})
 ```
 
-### Set both
-
-```
-db.business.update({"businessid": ""}, {"$set": {"purifiers": 1, "links": ["",""]}})
-```
-
 ### Set Category
 
 ```
 db.business.update({"businessid": ""}, {"$set": {"categories": [""]}})
+```
+
+### Set all
+
+```
+db.business.update({"businessid": ""}, {"$set": {"purifiers": 1, "links": ["",""], "categories": [""]}})
 ```
