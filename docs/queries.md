@@ -68,4 +68,6 @@ db.business.update({"businessid": ""}, {"$set": {"categories": [""]}})
 
 ```
 db.business.update({"businessid": ""}, {"$set": {"purifiers": 1, "links": ["",""], "categories": [""]}})
+
+db.business.update({"businessid": ""}, {"$set": {"purifiers": 1, "links": ["",""], "categories": [""], "businesscoords": []}})
 ```
