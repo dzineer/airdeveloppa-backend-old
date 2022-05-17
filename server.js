@@ -675,11 +675,11 @@ app.post('/1/business', (req, res) => {
                 };
 
                 if(req.body['purifiers']) {
-                  myobj.purifiers = req.body['purifiers'] ? req.body['purifiers'] : 0
+                  myobj["purifiers"] = req.body['purifiers'] ? req.body['purifiers'] : 0
                 }
 
                 if(req.body["categories"]) {
-                  myobj.categories = req.body["categories"]
+                  myobj["categories"] = req.body["categories"]
                 }
 
                 if(req.body["links"]) {
@@ -691,7 +691,7 @@ app.post('/1/business', (req, res) => {
                     }
                     links.push(link)
                   }
-                  myobj.links = links
+                  myobj["links"] = links
                 }
 
                 if (req.body["verifications"]) {
