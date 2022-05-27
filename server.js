@@ -16,6 +16,7 @@ var crypto = require('crypto');
 
 // MongoDB
 const { MongoClient, ObjectID } = require("mongodb");
+const { Console } = require('console');
 const username = encodeURIComponent(process.env.DBUSER);
 const password = encodeURIComponent(process.env.DBPASS);
 const authMechanism = "DEFAULT";
@@ -242,6 +243,54 @@ app.get('/1/list', (req, res) => {
             "_id": 0,
             "devices": 1
           }
+          
+          var list_devicelog_query = [
+            { "$facet" : {
+                "daily" : [{
+                  "$match": {
+                    "timestamp":  {
+                      "$gt": parseFloat(Date.now() - 86400 * 1000)
+                    }
+                  }
+                },
+                {
+                  "$group": {
+                    "_id": "$deviceid",
+                    "avg": {
+                      "$avg": "$AQI"
+                    }
+                  }
+                }],
+                "hourly" : [
+                  {
+                    "$match": {
+                      "timestamp":  {
+                        "$gt": parseFloat(Date.now() - 3600 * 1000)
+                      }
+                    }
+                  },
+                  {
+                    "$group": {
+                      "_id": "$deviceid",
+                      "avg": {
+                        "$avg": "$AQI"
+                      }
+                    }
+                  }
+                ]
+             } 
+            }
+          ]
+
+          var devicelog = [];
+          console.log("Fetching devices");
+          dbo.collection("devicelog").aggregate(list_devicelog_query, {}).toArray((findErr, findResult) => {
+            if(!findErr){
+              devicelog = findResult
+            }
+          });
+
+          console.log("Fetching business");
           dbo.collection("business").find(list_places_query, list_places_filter).toArray((findErr, findResult) => {
             if (!findErr) {
               // stubbed places
@@ -288,13 +337,15 @@ app.get('/1/list', (req, res) => {
                   } else {
                     can_verify = false; // defaults
                   }
-
+                  
                   // Populate Array of places by device with business as a nested object
                   // if AQI is present
                   if (deviceentry["AQI"]) {
                     if (deviceentry["AQI"] !== undefined && deviceentry["AQI"] !== null) {
                       // means its real
                       // but we should also look for last updated too (this maybe done at query level)
+                      var day = GetAvg(devicelog[0]["daily"], deviceentry["deviceid"])
+                      var hour = GetAvg(devicelog[0]["hourly"], deviceentry["deviceid"])
 
                       placerectopush = {
                         "device_id": deviceentry["deviceid"],
@@ -321,12 +372,12 @@ app.get('/1/list', (req, res) => {
                             "lastUpdateTS": deviceentry["updateTS"]
                           },
                           "hour": {
-                            "value": 0,
-                            "lastUpdateTS": 1
+                            "value": hour,
+                            "lastUpdateTS": deviceentry["updateTS"]
                           },
                           "day": {
-                            "value": 0,
-                            "lastUpdateTS": 1
+                            "value": day,
+                            "lastUpdateTS": deviceentry["updateTS"]
                           }
                         }
                       };
@@ -374,6 +425,17 @@ app.get('/1/list', (req, res) => {
   }
 });
 
+function GetAvg(devicelog_record, deviceId){
+  console.log("GetAvg")
+  for(var i = 0; i < devicelog_record.length; i++){
+    var device = devicelog_record[i]
+    if(device._id == deviceId){
+      return device.avg
+    }
+  }
+  return 0
+}
+
 // deviceinfo
 app.get('/1/deviceinfo/:id', (req, res) => {
     MongoClient.connect(dburi, (err, client) => {
@@ -415,6 +477,8 @@ app.get('/1/deviceinfo/:id', (req, res) => {
     });
 })
 
+
+
 app.get('/1/device_push', (req, res) => {
   results.meta.status = 400;
   results.meta.msg = "Must send a POST request";
@@ -422,6 +486,7 @@ app.get('/1/device_push', (req, res) => {
   res.status(results.meta.status);
   res.send(JSON.stringify(results));
 });
+
 
 // Begin device push API
 app.post('/1/device_push', (req, res) => {
