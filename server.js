@@ -223,6 +223,7 @@ app.get('/1/list', (req, res) => {
           // to only show places which are updated within 24 hours
           // Also devicestatus should not be "disabled"
           var list_places_query = {
+            // "devices": { "$exists": true }
             "businesscoords": { "$near":
                 { "$geometry":
                   {
@@ -722,6 +723,7 @@ app.post('/1/business', (req, res) => {
           // Admin key match
           if (req.body["businessname"] !== undefined && req.body['lng'] !== undefined && req.body['lat'] !== undefined && req.body["businessaddress"] !== undefined && req.body["businesscity"] !== undefined && req.body["businessregion"] !== undefined && req.body["businesscountry"] !== undefined) {
             // check that 'businessname', 'businessaddress', 'businesscity', 'businessregion', 'businesscountry' are defined
+
             MongoClient.connect(dburi, (dberr, client) => {
               if (!dberr) {
                 // DB connect
@@ -736,6 +738,35 @@ app.post('/1/business', (req, res) => {
                   "businesscoords": [parseFloat(req.body['lng']), parseFloat(req.body['lat'])],
                   "createDate": new Date()
                 };
+
+                if(req.body['purifiers']) {
+                  myobj["purifiers"] = req.body['purifiers'] ? req.body['purifiers'] : 0
+                }
+
+                if(req.body["categories"]) {
+                  myobj["categories"] = req.body["categories"]
+                }
+
+                if(req.body["links"]) {
+                  var links = []
+                  for(var i = 0; i < req.body["links"].length; i++) {
+                    var link = req.body["links"][i]
+                    if(link.type && link.type != 'facebook' && link.type != 'twitter' && link.type != 'google'){
+                      continue;
+                    }
+                    links.push(link)
+                  }
+                  myobj["links"] = links
+                }
+
+                if (req.body["verifications"]) {
+                  myobj["verifications"] = req.body["verifications"];
+                } 
+
+                if (req.body["can_verify"]) {
+                  myobj["can_verify"] = req.body["can_verify"];
+                } 
+
                 results.result = {
                   "to_be_inserted": myobj
                 };

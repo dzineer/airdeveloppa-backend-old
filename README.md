@@ -155,6 +155,9 @@ curl "https://backend.airdeveloppa.services/1/business" \
 - `devicebounty` - Bounty in satoshis
 - `devicelabel` - freeform label of the device
 - `devicelocation` - freeform location of device
+- `purifiers` - number of purifiers
+- `categories` - the category of the bussiness
+- `links` - an array of objects with one of 3 types - google, facebook, twitter  
 
 **Showing full response**
 
