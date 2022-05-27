@@ -809,10 +809,9 @@ app.put('/1/business', (req, res) => {
               // DB connect
               var dbo = client.db(process.env.DBNAME); // Get DB object
 
-              var myobj = {
-                ...req.body,
-              };
-
+              // var myobj = {
+              //   ...req.body,
+              // };
               
               if (req.body['businessname'] !== undefined) {
                 myobj.business.businessname = req.body['businessname'];
@@ -859,7 +858,7 @@ app.put('/1/business', (req, res) => {
               console.log("Setting up index (businesscoords), long and lat");
               // dbo.collection("business").createIndex({"businesscoords": "2dsphere"});
 
-              // console.log("Prepare insert");
+              // console.log("Prepare update");
               // dbo.collection("business").updateOne(myobj, (colerr, dbres) => {
               //   if (!colerr) {
               //     // inserted
