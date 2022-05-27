@@ -16,7 +16,7 @@ var crypto = require('crypto');
 
 // MongoDB
 const { MongoClient, ObjectID } = require("mongodb");
-const { Console } = require('console');
+
 const username = encodeURIComponent(process.env.DBUSER);
 const password = encodeURIComponent(process.env.DBPASS);
 const authMechanism = "DEFAULT";
