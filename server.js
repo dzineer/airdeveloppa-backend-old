@@ -808,33 +808,35 @@ app.put('/1/business', (req, res) => {
             if (!dberr) {
               // DB connect
               var dbo = client.db(process.env.DBNAME); // Get DB object
-
-              // var myobj = {
-              //   ...req.body,
-              // };
               
+              var filter = { businessid: req.body["businessid"]  }
+              var myobj = { };
+              
+              var test = dbo.collection("business").findOne(filter)
+              console.log("gotBusiness")
+              console.log(test)
               if (req.body['businessname'] !== undefined) {
-                myobj.business.businessname = req.body['businessname'];
+                myobj.businessname = req.body['businessname'];
               }
               // optional devicelabel
               if (req.body['businessaddress'] !== undefined) {
-                myobj.business.businessaddress = req.body['businessaddress'];
+                myobj.businessaddress = req.body['businessaddress'];
               }
 
               if (req.body['businesscity'] !== undefined) {
-                myobj.business.businesscity = req.body['businesscity'];
+                myobj.businesscity = req.body['businesscity'];
               }
 
               if (req.body['businessregion'] !== undefined) {
-                myobj.business.businessregion = req.body['businessregion'];
+                myobj.businessregion = req.body['businessregion'];
               }
 
               if (req.body['businesscountry'] !== undefined) {
-                myobj.business.businesscountry = req.body['businesscountry'];
+                myobj.businesscountry = req.body['businesscountry'];
               }
 
               if(req.body['lng'] && req.body['lat']){
-                myobj.business.businesscoords = [parseFloat(req.body['lng']), parseFloat(req.body['lat'])];
+                myobj.businesscoords = [parseFloat(req.body['lng']), parseFloat(req.body['lat'])];
               }
 
               if (req.body['purifiers'] !== undefined) {
@@ -849,8 +851,6 @@ app.put('/1/business', (req, res) => {
                 myobj.links = req.body['links'];
               }
 
-              console.log(myobj)
-
               results.result = {
                 "to_be_inserted": myobj
               };
@@ -859,23 +859,23 @@ app.put('/1/business', (req, res) => {
               // dbo.collection("business").createIndex({"businesscoords": "2dsphere"});
 
               // console.log("Prepare update");
-              // dbo.collection("business").updateOne(myobj, (colerr, dbres) => {
-              //   if (!colerr) {
-              //     // inserted
-              //     results.meta.status = 200;
-              //     results.meta.msg = "Success";
-              //     results.result['businessid'] = myobj['businessid'];
-              //     results.result['inserted_db_identifier'] = dbres.insertedId;
-              //     client.close(); // close connection
-              //   } else {
-              //     // insert error
-              //     results.meta.status = 500;
-              //     results.meta.msg = "Insert error";
-              //     client.close();
-              //   }
-              //   res.status(results.meta.status);
-              //   res.json(results);
-              // });
+              dbo.collection("business").updateOne(filter, { $set: myobj }, (colerr, dbres) => {
+                if (!colerr) {
+                  // inserted
+                  results.meta.status = 200;
+                  results.meta.msg = "Success";
+                  results.result['businessid'] = myobj['businessid'];
+                  results.result['inserted_db_identifier'] = dbres.insertedId;
+                  client.close(); // close connection
+                } else {
+                  // insert error
+                  results.meta.status = 500;
+                  results.meta.msg = "Insert error";
+                  client.close();
+                }
+                res.status(results.meta.status);
+                res.json(results);
+              });
             } else {
               results.meta.status = 500;
               results.meta.msg = "Unable to connect to database";
