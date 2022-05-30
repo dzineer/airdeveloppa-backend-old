@@ -6,3 +6,4 @@ postgresql.conf
 postgres/*
 node_modules/*
 mongodb/*
+*.pem
