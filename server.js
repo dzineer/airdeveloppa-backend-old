@@ -16,7 +16,7 @@ var crypto = require('crypto');
 
 // MongoDB
 const { MongoClient, ObjectID } = require("mongodb");
-const { Console } = require('console');
+
 const username = encodeURIComponent(process.env.DBUSER);
 const password = encodeURIComponent(process.env.DBPASS);
 const authMechanism = "DEFAULT";
@@ -374,11 +374,11 @@ app.get('/1/list', (req, res) => {
                           },
                           "hour": {
                             "value": hour,
-                            "lastUpdateTS": deviceentry["updateTS"]
+                            "lastUpdateTS": hour == 0 ? 1 : deviceentry["updateTS"]
                           },
                           "day": {
                             "value": day,
-                            "lastUpdateTS": deviceentry["updateTS"]
+                            "lastUpdateTS": day == 0 ? 1 : deviceentry["updateTS"]
                           }
                         }
                       };
@@ -716,6 +716,7 @@ app.get('/1/business', (req, res) => {
   res.status(results.meta.status);
   res.send(JSON.stringify(results));
 });
+
 app.post('/1/business', (req, res) => {
     if (req.body !== undefined) {
       if (req.body['token'] !== undefined) {
@@ -827,6 +828,189 @@ app.post('/1/business', (req, res) => {
     }
 });
 
+app.put('/1/business', (req, res) => {
+  if (req.body !== undefined) {
+    if (req.body['token'] !== undefined) {
+      if (req.body['token'] === process.env.ADMINKEY) {
+        // Admin key match
+        if (req.body["businessid"] !== undefined) {
+          // check that 'businessname', 'businessaddress', 'businesscity', 'businessregion', 'businesscountry' are defined
+          MongoClient.connect(dburi, (dberr, client) => {
+            if (!dberr) {
+              // DB connect
+              var dbo = client.db(process.env.DBNAME); // Get DB object
+              
+              var filter = { businessid: req.body["businessid"]  }
+              var myobj = { };
+              
+              var test = dbo.collection("business").findOne(filter)
+              console.log("gotBusiness")
+              console.log(test)
+              if (req.body['businessname'] !== undefined) {
+                myobj.businessname = req.body['businessname'];
+              }
+              // optional devicelabel
+              if (req.body['businessaddress'] !== undefined) {
+                myobj.businessaddress = req.body['businessaddress'];
+              }
+
+              if (req.body['businesscity'] !== undefined) {
+                myobj.businesscity = req.body['businesscity'];
+              }
+
+              if (req.body['businessregion'] !== undefined) {
+                myobj.businessregion = req.body['businessregion'];
+              }
+
+              if (req.body['businesscountry'] !== undefined) {
+                myobj.businesscountry = req.body['businesscountry'];
+              }
+
+              if(req.body['lng'] && req.body['lat']){
+                myobj.businesscoords = [parseFloat(req.body['lng']), parseFloat(req.body['lat'])];
+              }
+
+              if (req.body['purifiers'] !== undefined) {
+                myobj.purifiers = req.body['purifiers'];
+              }
+
+              if (req.body['categories'] !== undefined) {
+                myobj.categories = req.body['categories'];
+              }
+
+              if (req.body['links'] !== undefined) {
+                myobj.links = req.body['links'];
+              }
+
+              results.result = {
+                "to_be_inserted": myobj
+              };
+
+              console.log("Setting up index (businesscoords), long and lat");
+              // dbo.collection("business").createIndex({"businesscoords": "2dsphere"});
+
+              // console.log("Prepare update");
+              dbo.collection("business").updateOne(filter, { $set: myobj }, (colerr, dbres) => {
+                if (!colerr) {
+                  // inserted
+                  results.meta.status = 200;
+                  results.meta.msg = "Success";
+                  results.result['businessid'] = myobj['businessid'];
+                  results.result['inserted_db_identifier'] = dbres.insertedId;
+                  client.close(); // close connection
+                } else {
+                  // insert error
+                  results.meta.status = 500;
+                  results.meta.msg = "Insert error";
+                  client.close();
+                }
+                res.status(results.meta.status);
+                res.json(results);
+              });
+            } else {
+              results.meta.status = 500;
+              results.meta.msg = "Unable to connect to database";
+              client.close(); // close connection
+              res.status(results.meta.status);
+              res.send(JSON.stringify(results))
+            }
+          });
+        } else {
+          // Parameters not defined
+          results.meta.status = 400;
+          results.meta.msg = "Require 'businessid' parameter";
+          res.status(results.meta.status);
+          res.send(JSON.stringify(results));
+        }
+      } else {
+        // auth failed
+        results.meta.status = 401;
+        results.meta.msg = "Authentication failed";
+        res.status(results.meta.status);
+        res.send(JSON.stringify(results));
+      }
+    } else {
+      results.meta.status = 401;
+      results.meta.msg = "Requires authentication";
+      res.status(results.meta.status);
+      res.send(JSON.stringify(results));
+    }
+  } else {
+    results.meta.status = 400;
+    results.meta.msg = "Invalid request. Require 'token' and businessid";
+    res.status(results.meta.status);
+    res.send(JSON.stringify(results))
+  }
+});
+
+app.delete('/1/business', (req, res) => {
+  if (req.body !== undefined) {
+    if (req.body['token'] !== undefined) {
+      if (req.body['token'] === process.env.ADMINKEY) {
+        // Admin key match
+        if (req.body["businessid"] !== undefined) {
+          // check that 'businessname', 'businessaddress', 'businesscity', 'businessregion', 'businesscountry' are defined
+          MongoClient.connect(dburi, (dberr, client) => {
+            if (!dberr) {
+              // DB connect
+              var dbo = client.db(process.env.DBNAME); // Get DB object
+              var myobj = {
+                "businessid": req.body["businessid"]
+              };
+              results.result = {
+                "to_be_inserted": myobj
+              };
+              console.log("Prepare insert");
+              dbo.collection("business").deleteOne(myobj, (colerr, dbres) => {
+                if (!colerr) {
+                  // inserted
+                  results.meta.status = 200;
+                  results.meta.msg = "Successfully deleted business with id: " + myobj['businessid'];
+                  client.close(); // close connection
+                } else {
+                  // insert error
+                  results.meta.status = 500;
+                  results.meta.msg = "Delete error";
+                  client.close();
+                }
+                res.status(results.meta.status);
+                res.json(results);
+              });
+            } else {
+              results.meta.status = 500;
+              results.meta.msg = "Unable to connect to database";
+              client.close(); // close connection
+              res.status(results.meta.status);
+              res.send(JSON.stringify(results))
+            }
+          });
+        } else {
+          // Parameters not defined
+          results.meta.status = 400;
+          results.meta.msg = "Require 'businessid' parameter";
+          res.status(results.meta.status);
+          res.send(JSON.stringify(results));
+        }
+      } else {
+        // auth failed
+        results.meta.status = 401;
+        results.meta.msg = "Authentication failed";
+        res.status(results.meta.status);
+        res.send(JSON.stringify(results));
+      }
+    } else {
+      results.meta.status = 401;
+      results.meta.msg = "Requires authentication";
+      res.status(results.meta.status);
+      res.send(JSON.stringify(results));
+    }
+  } else {
+    results.meta.status = 400;
+    results.meta.msg = "Invalid request. Require 'token' and businessid";
+    res.status(results.meta.status);
+    res.send(JSON.stringify(results))
+  }
+});
 // Admin token only
 // Device create endpoint
 app.get('/1/setdeviceattr', (req, res) => {
