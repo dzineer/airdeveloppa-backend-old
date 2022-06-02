@@ -960,22 +960,33 @@ app.delete('/1/business', (req, res) => {
               results.result = {
                 "to_be_inserted": myobj
               };
+
               console.log("Prepare insert");
-              dbo.collection("business").deleteOne(myobj, (colerr, dbres) => {
+              dbo.collection("business").findOne(myobj, (colerr, dbres) => {
                 if (!colerr) {
-                  // inserted
-                  results.meta.status = 200;
-                  results.meta.msg = "Successfully deleted business with id: " + myobj['businessid'];
-                  client.close(); // close connection
-                } else {
-                  // insert error
-                  results.meta.status = 500;
-                  results.meta.msg = "Delete error";
-                  client.close();
+                  if(dbres){
+                    dbo.collection("business").deleteOne(myobj, (colerr, dbres) => {
+                      if (!colerr) {
+                        // inserted
+                        results.meta.status = 200;
+                        results.meta.msg = "Successfully deleted business with id: " + myobj['businessid'];
+                        client.close(); // close connection
+                      } else {
+                        // insert error
+                        results.meta.status = 500;
+                        results.meta.msg = "Delete error";
+                        client.close();
+                      }
+                      res.status(results.meta.status);
+                      res.json(results);
+                    });
+                  } else {
+                    results.meta.status = 404;
+                    results.meta.msg = "company not found";
+                    client.close(); // close connection
+                  }
                 }
-                res.status(results.meta.status);
-                res.json(results);
-              });
+              })
             } else {
               results.meta.status = 500;
               results.meta.msg = "Unable to connect to database";
