@@ -5,6 +5,10 @@ const app = express()
 // for envirobment
 const process = require("process");
 
+// new deployment flow
+const dotenv = require("dotenv")
+dotenv.config()
+
 // define web port
 const port = process.env.BACKENDPORT || 3000;
 
@@ -345,8 +349,8 @@ app.get('/1/list', (req, res) => {
                     if (deviceentry["AQI"] !== undefined && deviceentry["AQI"] !== null) {
                       // means its real
                       // but we should also look for last updated too (this maybe done at query level)
-                      var day = GetAvg(devicelog[0]["daily"], deviceentry["deviceid"])
-                      var hour = GetAvg(devicelog[0]["hourly"], deviceentry["deviceid"])
+                      var day = devicelog.length > 0 ? GetAvg(devicelog[0]["daily"], deviceentry["deviceid"]) : 0
+                      var hour = devicelog.length > 0 ? GetAvg(devicelog[0]["hourly"], deviceentry["deviceid"]) : 0
 
                       placerectopush = {
                         "device_id": deviceentry["deviceid"],
@@ -961,7 +965,7 @@ app.delete('/1/business', (req, res) => {
                 "to_be_inserted": myobj
               };
 
-              console.log("Prepare insert");
+              console.log("Prepare delete");
               dbo.collection("business").findOne(myobj, (colerr, dbres) => {
                 if (!colerr) {
                   if(dbres){
