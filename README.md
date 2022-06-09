@@ -129,21 +129,72 @@ This endpoint shows the users balance in satoshis.
 
 ##### parameters
 
-- `token` - Admin authentication
+- `token` - (required. account authorization token)
 - `businessname`
 - `businessaddress`
 - `businesscity` (eg. Chiang Mai)
 - `businessregion` (eg. Chiang Mai)
 - `businesscountry` (eg. TH)
 - `lat` - latitude of business
-- `lng` - longitude of busines
+- `lng` - longitude of business
+- `purifiers` - number of purifiers
+- `categories` - the category of the bussiness
+- `links` - an array of objects with one of 3 types - google, facebook, twitter  
 
 ```bash
 # Example
 curl "https://backend.airdeveloppa.services/1/business" \
 -H "Content-type: application/json" \
--d '{"token": "security token", "businessname": "Corner Bistro & Burrito Squad", "businessaddress": "8, 8 Ratchaphuek Alley", "businesscity": "Chiang Mai", "businessregion": "Chiang Mai", "businesscountry": "TH", "lat": 18.798663671992312, "lng": 98.97526790697208}'
+-d '{"token": "security token", "businessname": "Corner Bistro & Burrito Squad", "businessaddress": "8, 8 Ratchaphuek Alley", "businesscity": "Chiang Mai", "businessregion": "Chiang Mai", "businesscountry": "TH", "lat": 18.798663671992312, "lng": 98.97526790697208, "purifiers" : 2, "categories": ["new", "test"],  "links": [{ { "type": "facebook", "url": "facebook.com" }, { "type": "google", "url": "google.com" }]}'
 ```
+
+#### Business Update
+
+**Endpoint:** PUT https://backend.airdeveloppa.services/1/business
+
+Endpoint note: to update the coordiates you will need to include both lat and lng
+
+##### parameters
+
+- `token` - (required. account authorization token)
+- `businessid` (required.)
+- `businessname`
+- `businessaddress`
+- `businesscity` (eg. Chiang Mai)
+- `businessregion` (eg. Chiang Mai)
+- `businesscountry` (eg. TH)
+- `lat` - latitude of business*
+- `lng` - longitude of business*
+- `purifiers` - number of purifiers
+- `categories` - the category of the bussiness
+- `links` - an array of objects with one of 3 types - google, facebook, twitter  
+
+```bash
+# Example
+curl "https://backend.airdeveloppa.services/1/business" \
+-H "Content-type: application/json" \
+-d '{"token": "security token", "businessid": "xxx-xxx-xxx-xxx", "businessname": "Corner Bistro & Burrito Squad", "businessaddress": "8, 8 Ratchaphuek Alley", "businesscity": "Chiang Mai", "businessregion": "Chiang Mai", "businesscountry": "TH", "lat": 18.798663671992312, "lng": 98.97526790697208, "purifiers" : 2, "categories": ["new", "test"],  "links": [{ { "type": "facebook", "url": "facebook.com" }, { "type": "google", "url": "google.com" }]}'
+```
+
+
+#### Business Delete
+
+**Endpoint:** DELETE https://backend.airdeveloppa.services/1/business
+
+Endpoint note: this endpoint will permanently delete the business 
+
+##### parameters
+
+- `token` - Admin authentication
+- `businessid`
+
+```bash
+# Example
+curl "https://backend.airdeveloppa.services/1/business" \
+-H "Content-type: application/json" \
+-d '{"token": "security token", "businessid": "xxx-xxx-xxx-xxx" }'
+```
+
 #### Device register
 
 **Endpoint:** POST https://backend.airdeveloppa.services/1/deviceregister
@@ -155,9 +206,6 @@ curl "https://backend.airdeveloppa.services/1/business" \
 - `devicebounty` - Bounty in satoshis
 - `devicelabel` - freeform label of the device
 - `devicelocation` - freeform location of device
-- `purifiers` - number of purifiers
-- `categories` - the category of the bussiness
-- `links` - an array of objects with one of 3 types - google, facebook, twitter  
 
 **Showing full response**
 
