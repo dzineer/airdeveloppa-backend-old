@@ -14,7 +14,9 @@ The `docker-compose` file in this repository also has the database engine within
 
 All thats required is `docker(1)` and `docker-compose(1)` (latest versions recommended) installed. You may follow the [guide](https://docs.docker.com/engine/install/ubuntu/) for steps how to do so.
 
-## Running (Docker)
+
+
+~~ ## Running (Docker)
 
 ```
 # First two steps may no longer be needed
@@ -26,7 +28,7 @@ docker pull registry.gitlab.com/nolim1t/airdeveloppa-backend:latest
 
 # Pull specific version
 docker pull registry.gitlab.com/nolim1t/airdeveloppa-backend:v0.1.16
-```
+```~~ 
 
 ## MongoDB
 
@@ -256,3 +258,12 @@ curl "https://backend.airdeveloppa.services/1/validatedevice" \
 -H "Content-type: application/json" \
 -d '{"businessid": "", "deviceid": ""}'
 ```
+
+## Cert Renewal : 6/10/2022
+
+```bash
+certbot-auto register --update-registration --email new_email@example.com
+```
+
+where new_email@example.com is any email you want to use
+
