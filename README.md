@@ -16,16 +16,14 @@ All thats required is `docker(1)` and `docker-compose(1)` (latest versions recom
 
 
 
-~~ ## Running (Docker)~~ 
+## Running (Docker)
 
 ```
-~~ # First two steps may no longer be needed
-
+# First two steps may no longer be needed
 # Login as user nolim1t
 docker login registry.gitlab.com -u nolim1t
 # Enter personal access token as password
 docker pull registry.gitlab.com/nolim1t/airdeveloppa-backend:latest
-
 # Pull specific version
 docker pull registry.gitlab.com/nolim1t/airdeveloppa-backend:v0.1.16~~ 
 ```
