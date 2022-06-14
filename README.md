@@ -15,18 +15,47 @@ The `docker-compose` file in this repository also has the database engine within
 All thats required is `docker(1)` and `docker-compose(1)` (latest versions recommended) installed. You may follow the [guide](https://docs.docker.com/engine/install/ubuntu/) for steps how to do so.
 
 
+## register certbot
 
-## Running (Docker)
+`certbot register --update-registration --email <new_email@address.org>`
 
-```
-# First two steps may no longer be needed
-# Login as user nolim1t
-docker login registry.gitlab.com -u nolim1t
-# Enter personal access token as password
-docker pull registry.gitlab.com/nolim1t/airdeveloppa-backend:latest
-# Pull specific version
-docker pull registry.gitlab.com/nolim1t/airdeveloppa-backend:v0.1.16~~ 
-```
+setup the certbot to renew then restart the server using the following:
+`certbot renew --post-hook "pm2 restart server.js"`
+
+recommend setting up an alarm for when the cert expires to make sure this process occurred properly
+Nginx is being used to forward port 3000 to 443.
+
+## start server with docker
+
+for see all container in docker
+`docker ps`
+for build and run container
+`docker-compose build`
+`docker-compose up`
+
+for run new container & database will be lost
+`docker-compose down`
+`docker-compose up`
+
+## connect on server
+
+`ssh ubuntu@18.143.13.236`
+
+## login to database
+
+`docker exec -i mongodb sh -c 'mongo -u root -p --authenticationDatabase admin' `
+
+## password :
+
+`developpapass`
+
+## dump database
+
+`mongodump --uri "mongodb://127.0.0.1:27017/airdeveloppa?authenticationDatabase=admin" --collection <collection_name> -o <folder_path>`
+
+## import data
+
+`docker exec -i mongodb /usr/bin/mongorestore --username root --password developpapass --authenticationDatabase admin --db airdeveloppa <folder_path>`
 
 ## MongoDB
 
@@ -256,12 +285,3 @@ curl "https://backend.airdeveloppa.services/1/validatedevice" \
 -H "Content-type: application/json" \
 -d '{"businessid": "", "deviceid": ""}'
 ```
-
-## Cert Renewal : 6/10/2022
-
-```bash
-certbot-auto register --update-registration --email new_email@example.com
-```
-
-where new_email@example.com is any email you want to use
-
