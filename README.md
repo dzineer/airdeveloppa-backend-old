@@ -20,7 +20,7 @@ All thats required is `docker(1)` and `docker-compose(1)` (latest versions recom
 `certbot register --update-registration --email <new_email@address.org>`
 
 setup the certbot to renew then restart the server using the following:
-`certbot renew --post-hook "pm2 restart server.js"`
+`certbot renew --post-hook <command to restart the docker container>`
 
 recommend setting up an alarm for when the cert expires to make sure this process occurred properly
 Nginx is being used to forward port 3000 to 443.
@@ -45,17 +45,13 @@ for run new container & database will be lost
 
 `docker exec -i mongodb sh -c 'mongo -u root -p --authenticationDatabase admin' `
 
-## password :
-
-`developpapass`
-
 ## dump database
 
 `mongodump --uri "mongodb://127.0.0.1:27017/airdeveloppa?authenticationDatabase=admin" --collection <collection_name> -o <folder_path>`
 
 ## import data
 
-`docker exec -i mongodb /usr/bin/mongorestore --username root --password developpapass --authenticationDatabase admin --db airdeveloppa <folder_path>`
+`docker exec -i mongodb /usr/bin/mongorestore --username root --password <password> --authenticationDatabase admin --db airdeveloppa <folder_path>`
 
 ## MongoDB
 
