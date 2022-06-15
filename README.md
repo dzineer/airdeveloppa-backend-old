@@ -7,11 +7,12 @@
 
 ## Architecture
 
-The backend is a `nodejs` application packaged in a `docker` container self built by gitlab CI and pushed to the gitlab container registry.
+The backend is a `nodejs` application packaged in a `docker` container.
 
 The `docker-compose` file in this repository also has the database engine within here for easy access.
 
-All thats required is `docker(1)` and `docker-compose(1)` (latest versions recommended) installed. You may follow the [guide](https://docs.docker.com/engine/install/ubuntu/) for steps how to do so.
+All thats required is `docker(1)` and `docker-compose(1)` (latest versions recommended) installed.
+You may follow the [guide](https://docs.docker.com/engine/install/ubuntu/) for steps how to do so.
 
 ## Start server with docker
 
@@ -51,6 +52,11 @@ Nginx is being used to forward port 3000 to 443.
 
 `docker exec -i mongodb /usr/bin/mongorestore --username root --password <password> --authenticationDatabase admin --db airdeveloppa <folder_path>`
 
+## Nginx 
+
+Nginx is used to listen for https traffic on 443 and maps it to server port 3000
+
+The Nginx configuration is located in `/etc/nginx/conf.d/backend.conf`
 
 ## Sample endpoints
 
