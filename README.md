@@ -14,18 +14,7 @@ The `docker-compose` file in this repository also has the database engine within
 
 All thats required is `docker(1)` and `docker-compose(1)` (latest versions recommended) installed. You may follow the [guide](https://docs.docker.com/engine/install/ubuntu/) for steps how to do so.
 
-
-## register certbot
-
-`certbot register --update-registration --email <new_email@address.org>`
-
-setup the certbot to renew then restart the server using the following:
-`certbot renew --post-hook <command to restart the docker container>`
-
-recommend setting up an alarm for when the cert expires to make sure this process occurred properly
-Nginx is being used to forward port 3000 to 443.
-
-## start server with docker
+## Start server with docker
 
 for see all container in docker
 `docker ps`
@@ -37,29 +26,32 @@ for run new container & database will be lost
 `docker-compose down`
 `docker-compose up`
 
-## connect on server
+## Register certbot
+
+`certbot register --update-registration --email <new_email@address.org>`
+
+setup the certbot to renew then restart the server using the following:
+`certbot renew --post-hook <command to restart the docker container>`
+
+recommend setting up an alarm for when the cert expires to make sure this process occurred properly
+Nginx is being used to forward port 3000 to 443.
+
+## Connect on server
 
 `ssh ubuntu@18.143.13.236`
 
-## login to database
+## Login to database
 
 `docker exec -i mongodb sh -c 'mongo -u root -p --authenticationDatabase admin' `
 
-## dump database
+## Dump database
 
 `mongodump --uri "mongodb://127.0.0.1:27017/airdeveloppa?authenticationDatabase=admin" --collection <collection_name> -o <folder_path>`
 
-## import data
+## Import data
 
 `docker exec -i mongodb /usr/bin/mongorestore --username root --password <password> --authenticationDatabase admin --db airdeveloppa <folder_path>`
 
-## MongoDB
-
-Some sample mongodb commands
-
-```bash
-docker exec -it mongodb mongo -uroot -ppasssword
-```
 
 ## Sample endpoints
 
