@@ -546,9 +546,9 @@ app.post('/1/device_push', (req, res) => {
             };
             // Below wait for the results
             // create index
-            // console.log("Setting up index");
+            console.log("Setting up index");
             dbo.collection("devicelog").createIndex({"createDate": 1}, {"expireAfterSeconds": 86400});
-            // console.log("Prepare insert");
+            console.log("Prepare insert");
             dbo.collection("devicelog").insertOne(myobj, (colerr, dbres) => {
               if (!colerr) {
                 // inserted
@@ -774,10 +774,10 @@ app.post('/1/business', (req, res) => {
                 results.result = {
                   "to_be_inserted": myobj
                 };
-                // console.log("Setting up index (businesscoords), long and lat");
+                console.log("Setting up index (businesscoords), long and lat");
                 dbo.collection("business").createIndex({"businesscoords": "2dsphere"});
 
-                // console.log("Prepare insert");
+                console.log("Prepare insert");
                 dbo.collection("business").insertOne(myobj, (colerr, dbres) => {
                   if (!colerr) {
                     // inserted
@@ -847,7 +847,8 @@ app.put('/1/business', (req, res) => {
               var myobj = { };
               
               var test = dbo.collection("business").findOne(filter)
-              
+              console.log("gotBusiness")
+              console.log(test)
               if (req.body['businessname'] !== undefined) {
                 myobj.businessname = req.body['businessname'];
               }
@@ -888,9 +889,10 @@ app.put('/1/business', (req, res) => {
                 "to_be_inserted": myobj
               };
 
-              // console.log("Setting up index (businesscoords), long and lat");
+              console.log("Setting up index (businesscoords), long and lat");
+              // dbo.collection("business").createIndex({"businesscoords": "2dsphere"});
 
-              console.log("Prepare update");
+              // console.log("Prepare update");
               dbo.collection("business").updateOne(filter, { $set: myobj }, (colerr, dbres) => {
                 if (!colerr) {
                   // inserted
@@ -962,7 +964,7 @@ app.delete('/1/business', (req, res) => {
                 "to_be_inserted": myobj
               };
 
-              // console.log("Prepare delete");
+              console.log("Prepare delete");
               dbo.collection("business").findOne(myobj, (colerr, dbres) => {
                 if (!colerr) {
                   if(dbres){
@@ -1090,7 +1092,7 @@ app.post('/1/setdeviceattr', (req, res) => {
                     res.send(JSON.stringify(results));
                   } else {
                     // error
-                    // console.log("Error updating business collection (" + JSON.stringify(updaterr) + ")");
+                    console.log("Error updating business collection (" + JSON.stringify(updaterr) + ")");
                     results.meta.status = 500;
                     results.meta.msg = "database error";
                     res.status(results.meta.status);
@@ -1168,7 +1170,7 @@ app.post('/1/validatedevice', (req, res) => {
               res.status(results.meta.status);
               res.send(JSON.stringify(results))
             } else {
-              console.log("validatedevice: " + vdErr);
+              console.log(vdErr);
               results.meta.status = 500;
               results.meta.msg = "Error performing query";
               results.meta.debug = vdErr;
