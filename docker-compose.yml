@@ -1,54 +1,44 @@
 version: '3.8'
 services:
-        nginx:
-                container_name: web
-                image: nginx:1.17.8
-                volumes:
-                    - ${PWD}/nginx:/etc/nginx
-                restart: on-failure
-                ports:
-                    - "${WEBPORT}:80"
-                stop_grace_period: 30s
-                depends_on: [ backend, db ]
-                networks:
-                    net:
-                        ipv4_address: ${NGINXIPADDRESS}
-        backend:
-                build: .
-                image: ${BACKENDIMAGE}
-                environment:
-                        HOME: /data
-                        DBUSER: ${DBADMINUSER}
-                        DBPASS: ${DBADMINPASS}
-                        DBIP: ${DBIPADDRESS}
-                        DBPORT: ${DBPORT}
-                        DBNAME: ${DBNAME}
-                        ADMINKEY: ${ADMINKEY}
-                container_name: backend
-                volumes:
-                        - ${PWD}/backend:/data/
-                restart: on-failure
-                stop_grace_period: 30s
-                depends_on: [ db ]
-                networks:
-                    net:
-                        ipv4_address: ${BACKENDIPADDRESS}
-        db:
-                image: ${DATABASEIMAGE}
-                environment:
-                        HOME: /data
-                        MONGO_INITDB_ROOT_USERNAME: ${DBADMINUSER}
-                        MONGO_INITDB_ROOT_PASSWORD: ${DBADMINPASS}
-                container_name: mongodb
-                volumes:
-                        - ${PWD}/mongodb:/data/db
-                ports:
-                    - "${DBEXTERNALPORT}:${DBPORT}"
-                restart: on-failure
-                stop_grace_period: 30s
-                networks:
-                    net:
-                        ipv4_address: ${DBIPADDRESS}
+    backend:
+        build: .
+        image: ${BACKENDIMAGE}
+        environment:
+            HOME: /data
+            DBUSER: ${DBADMINUSER}
+            DBPASS: ${DBADMINPASS}
+            DBIP: ${DBIPADDRESS}
+            DBPORT: ${DBPORT}
+            DBNAME: ${DBNAME}
+            ADMINKEY: ${ADMINKEY}
+        container_name: backend
+        volumes:
+            - ./backend:/data/
+        restart: on-failure
+        stop_grace_period: 30s
+        ports:
+            - "3000:3000"
+        depends_on: [ db ]
+        networks:
+            net:
+                ipv4_address: ${BACKENDIPADDRESS}
+    db:
+        image: ${DATABASEIMAGE}
+        environment:
+            HOME: /data
+            MONGO_INITDB_ROOT_USERNAME: ${DBADMINUSER}
+            MONGO_INITDB_ROOT_PASSWORD: ${DBADMINPASS}
+        container_name: mongodb
+        volumes:
+            - /home/ubuntu/mongodb/data/db
+            - ./dump:/dump/
+        ports:
+            - "${DBEXTERNALPORT}:${DBPORT}"
+        restart: on-failure
+        stop_grace_period: 30s
+        networks:
+            net:
+                ipv4_address: ${DBIPADDRESS}
 
 networks:
     net:
