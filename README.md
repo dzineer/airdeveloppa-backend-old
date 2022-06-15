@@ -277,3 +277,4 @@ curl "https://backend.airdeveloppa.services/1/validatedevice" \
 -H "Content-type: application/json" \
 -d '{"businessid": "", "deviceid": ""}'
 ```
+sdasd
