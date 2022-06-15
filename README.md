@@ -1,8 +1,7 @@
 # AirDeveloppa Backend
 
-* [Running on docker](#running-docker)
-* [MongoDB Commands](#mongodb)
-* [Maintainer Notes](#maintainer-notes)
+* [Running on docker](#start-server-with-docker)
+* [MongoDB Commands](#login-to-mongodb)
 * [Generating an admin key](#generating-an-admin-key)
 * [Endpoint Descriptions](#sample-endpoints)
 
@@ -40,7 +39,7 @@ Nginx is being used to forward port 3000 to 443.
 
 `ssh ubuntu@18.143.13.236`
 
-## Login to database
+## Login to mongodb
 
 `docker exec -i mongodb sh -c 'mongo -u root -p --authenticationDatabase admin' `
 
