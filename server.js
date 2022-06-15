@@ -431,7 +431,6 @@ app.get('/1/list', (req, res) => {
 });
 
 function GetAvg(devicelog_record, deviceId){
-  console.log("GetAvg")
   for(var i = 0; i < devicelog_record.length; i++){
     var device = devicelog_record[i]
     if(device._id == deviceId){
